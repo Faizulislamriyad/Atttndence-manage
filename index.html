@@ -51,6 +51,7 @@
   .app { max-width: 1200px; margin: 0 auto; }
   .hidden { display: none !important; }
 
+  /* ============ Topbar ============ */
   .topbar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: 12px 16px; background: var(--surface); border: 1px solid var(--border);
@@ -73,6 +74,7 @@
   .icon-btn:hover { background: var(--bg-soft); color: var(--text); border-color: var(--border-strong); }
   .icon-btn:active { transform: scale(0.94); }
 
+  /* ============ Search ============ */
   .search-wrap { position: relative; margin-bottom: 20px; }
   .search-wrap .fa-magnifying-glass {
     position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
@@ -94,34 +96,53 @@
   }
   .search-clear:hover { background: var(--bg-soft); color: var(--text-2); }
 
+  /* ============ Student grid ============ */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .student-card {
-    display: flex; gap: 16px; padding: 18px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-xs);
+    display: flex; gap: 14px; align-items: center; padding: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-xs);
     transition: all .2s ease; animation: cardIn .3s ease backwards;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    text-align: left; font-family: inherit; color: inherit; width: 100%;
   }
   .student-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .student-card:active { transform: scale(.99); }
   @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
   .avatar {
     width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
     display: grid; place-items: center; color: #fff; font-size: 16px; font-weight: 500;
     letter-spacing: .02em; box-shadow: var(--shadow-xs);
+    position: relative; overflow: hidden;
   }
-  .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .avatar > span { position: relative; z-index: 0; }
+  .avatar > img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 1;
+  }
+
+  .card-body { flex: 1; min-width: 0; }
   .card-name {
     font-size: .98rem; font-weight: 500; letter-spacing: -0.005em;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);
   }
-  .card-roll { font-size: .8rem; color: var(--text-3); font-weight: 400; }
-  .card-present { display: flex; align-items: baseline; gap: 7px; margin-top: 10px; }
-  .present-num { font-size: 1.35rem; font-weight: 500; color: var(--success-text); letter-spacing: -0.02em; line-height: 1; }
+  .card-roll { font-size: .8rem; color: var(--text-3); font-weight: 400; margin-top: 1px; }
+  .card-present { display: flex; align-items: baseline; gap: 7px; margin-top: 9px; }
+  .present-num { font-size: 1.3rem; font-weight: 500; color: var(--success-text); letter-spacing: -0.02em; line-height: 1; }
   .present-label { font-size: .68rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-  .card-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .card-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
   .chip {
     font-size: .72rem; padding: 3px 8px; border-radius: 6px;
     background: var(--accent-soft); color: var(--accent-text); font-weight: 400; white-space: nowrap;
   }
+  .card-chevron {
+    color: var(--muted); font-size: 11px; flex-shrink: 0;
+    transition: all .18s; align-self: center;
+  }
+  .student-card:hover .card-chevron { color: var(--accent); transform: translateX(2px); }
 
+  /* ============ Empty & skeleton ============ */
   .empty {
     grid-column: 1 / -1; padding: 64px 24px; text-align: center; color: var(--muted);
     background: var(--surface); border: 1px dashed var(--border-strong); border-radius: var(--r-lg);
@@ -139,6 +160,7 @@
   .sk-line { height: 12px; margin-bottom: 8px; }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
+  /* ============ FAB ============ */
   .fab {
     position: fixed; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom));
     width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: #fff;
@@ -149,6 +171,7 @@
   .fab:hover { background: var(--accent-hover); transform: translateY(-2px) scale(1.03); box-shadow: 0 12px 28px rgba(99,102,241,0.5); }
   .fab:active { transform: scale(0.95); }
 
+  /* ============ Panel ============ */
   .panel { position: fixed; inset: 0; z-index: 300; display: flex; justify-content: flex-end; }
   .panel-backdrop {
     position: absolute; inset: 0; background: rgba(9,9,11,0.55);
@@ -169,8 +192,9 @@
   }
   .panel-header h2 { font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
   .panel-header p { font-size: .78rem; color: var(--muted); margin-top: 2px; font-weight: 400; }
-  .panel-body { flex: 1; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 
+  /* ============ Login ============ */
   .login-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 24px; }
   .login-icon {
     width: 64px; height: 64px; border-radius: 18px;
@@ -182,10 +206,11 @@
   .login-wrap > p { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
   .login-form { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 14px; }
 
+  /* ============ Fields ============ */
   .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   .field label { font-size: .8rem; color: var(--text-2); font-weight: 400; }
   .input {
-    width: 100%; padding: 11px 14px; background: var(--surface);
+    width: 100%; min-width: 0; padding: 11px 14px; background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text);
     font-size: 15px; font-family: inherit; font-weight: 400; outline: none; transition: all .18s ease;
   }
@@ -193,10 +218,41 @@
   .input:hover { border-color: var(--border-strong); }
   .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .input.invalid { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
-  [data-theme="dark"] .input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
   .field-error { font-size: .76rem; color: var(--danger-text); display: none; font-weight: 400; }
   .field-error.show { display: block; }
 
+  /* 🔧 Date input — mobile overflow fix */
+  input[type="date"] {
+    min-width: 0;
+    max-width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+  }
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    min-width: 0;
+    flex: 1;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-left: auto;
+    cursor: pointer;
+  }
+  [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.65); }
+
+  /* ============ Photo upload ============ */
+  .photo-upload { display: flex; gap: 14px; align-items: center; min-width: 0; }
+  .photo-preview {
+    width: 64px; height: 64px; border-radius: 14px;
+    background: var(--bg-soft); border: 2px dashed var(--border-strong);
+    display: grid; place-items: center; color: var(--muted); font-size: 20px;
+    flex-shrink: 0; background-size: cover; background-position: center;
+    overflow: hidden; transition: all .18s;
+  }
+  .photo-preview.has-image { border-style: solid; border-color: var(--border); color: transparent; }
+  .photo-actions { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+
+  /* ============ Buttons ============ */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 11px 20px; border-radius: var(--r-sm); border: 1px solid transparent;
@@ -215,6 +271,13 @@
   .btn-danger:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); }
   .btn-block { width: 100%; }
   .btn-sm { padding: 8px 14px; font-size: .82rem; }
+  .btn-icon-sm {
+    width: 32px; height: 32px; padding: 0; border-radius: 8px;
+    background: transparent; color: var(--text-3); border: 1px solid var(--border);
+    display: grid; place-items: center; cursor: pointer;
+    transition: all .15s; font-family: inherit; flex-shrink: 0;
+  }
+  .btn-icon-sm:hover { background: var(--bg-soft); color: var(--text-2); border-color: var(--border-strong); }
 
   .spinner {
     display: inline-block; width: 13px; height: 13px; border-radius: 50%;
@@ -223,6 +286,7 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ============ Panel tabs ============ */
   .panel-tabs {
     display: flex; gap: 4px; padding: 4px; background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 18px;
@@ -239,6 +303,7 @@
   .panel-tab:hover { background: var(--bg-soft); color: var(--text-2); }
   .panel-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
 
+  /* ============ Section ============ */
   .section {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-lg); padding: 18px; margin-bottom: 14px;
@@ -250,6 +315,7 @@
   .section h3 { font-size: .95rem; font-weight: 500; letter-spacing: -0.005em; }
   .section .hint { font-size: .8rem; color: var(--muted); margin-bottom: 16px; line-height: 1.55; }
 
+  /* ============ Signed bar ============ */
   .signed-bar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: 12px 14px; background: var(--surface); border: 1px solid var(--border);
@@ -262,6 +328,7 @@
   }
   .signed-info span { font-size: .84rem; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+  /* ============ Admin row ============ */
   .admin-row {
     display: flex; align-items: center; gap: 12px; padding: 11px 12px;
     border: 1px solid var(--border); border-radius: var(--r-sm); margin-bottom: 8px; transition: all .15s;
@@ -274,26 +341,12 @@
     overflow: hidden; text-overflow: ellipsis; color: var(--text);
   }
   .admin-row-body small { font-size: .76rem; color: var(--muted); display: block; margin-top: 1px; }
+  .admin-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
-  .activity { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
-  .activity-item {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    padding: 10px 12px; background: var(--bg-soft); border: 1px solid var(--border);
-    border-radius: var(--r-sm); font-size: .82rem; animation: cardIn .25s ease;
-  }
-  .activity-item .who { flex: 1; min-width: 0; }
-  .activity-item .who strong { font-weight: 500; color: var(--text); display: inline; }
-  .activity-item .who small { color: var(--muted); font-size: .74rem; margin-left: 2px; }
-  .activity-item .sub-tag {
-    display: inline-block; font-size: .7rem; padding: 2px 7px; border-radius: 5px;
-    background: var(--accent-soft); color: var(--accent-text); margin-left: 6px; font-weight: 400;
-  }
-  .activity-item .time { font-size: .72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-
-  /* ---------- Session view (NEW) ---------- */
+  /* ============ Session view ============ */
   .session-stats {
-    display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 14px;
-    font-size: .78rem; color: var(--text-3);
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px;
+    font-size: .76rem; color: var(--text-3);
   }
   .stat-pill {
     display: inline-flex; align-items: center; gap: 6px;
@@ -303,6 +356,7 @@
   .stat-pill b { font-weight: 500; color: var(--text); }
   .stat-pill.present b { color: var(--success-text); }
   .stat-pill.absent b { color: var(--danger-text); }
+  .stat-pill i { font-size: 11px; }
 
   .session-list { display: flex; flex-direction: column; gap: 6px; }
 
@@ -347,6 +401,23 @@
   .mark-btn.absent.active:hover:not(:disabled) { background: #dc2626; }
   .mark-btn.present.active:hover:not(:disabled) { background: #059669; }
 
+  /* ============ Activity ============ */
+  .activity { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
+  .activity-item {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 10px 12px; background: var(--bg-soft); border: 1px solid var(--border);
+    border-radius: var(--r-sm); font-size: .82rem; animation: cardIn .25s ease;
+  }
+  .activity-item .who { flex: 1; min-width: 0; }
+  .activity-item .who strong { font-weight: 500; color: var(--text); }
+  .activity-item .who small { color: var(--muted); font-size: .74rem; margin-left: 2px; }
+  .activity-item .sub-tag {
+    display: inline-block; font-size: .7rem; padding: 2px 7px; border-radius: 5px;
+    background: var(--accent-soft); color: var(--accent-text); margin-left: 6px; font-weight: 400;
+  }
+  .activity-item .time { font-size: .72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+
+  /* ============ Toast ============ */
   .toast {
     position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom));
     transform: translate(-50%, 200%); background: #18181b; color: #fafafa;
@@ -361,6 +432,7 @@
   .toast.error { background: #991b1b; }
   .toast.info { background: #1e40af; }
 
+  /* ============ Confirm modal ============ */
   .modal { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 20px; }
   .modal-backdrop {
     position: absolute; inset: 0; background: rgba(9,9,11,0.55);
@@ -376,6 +448,86 @@
   .modal-dialog p { font-size: .86rem; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
+  /* ============ Student detail modal ============ */
+  .detail-dialog {
+    position: relative; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); max-width: 480px; width: 100%; max-height: 85vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: var(--shadow-xl); animation: modalIn .22s ease;
+  }
+  .detail-close {
+    position: absolute; top: 12px; right: 12px; z-index: 10;
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-2); cursor: pointer;
+    display: grid; place-items: center; font-size: 13px; transition: all .15s;
+  }
+  .detail-close:hover { background: var(--bg-soft); color: var(--text); }
+
+  .detail-hero {
+    padding: 28px 20px 20px; text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--bg-soft) 0%, var(--surface) 100%);
+    flex-shrink: 0;
+  }
+  .detail-hero .avatar {
+    width: 76px; height: 76px; border-radius: 20px;
+    margin: 0 auto 14px; font-size: 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .detail-hero h2 { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 3px; }
+  .detail-hero > p { font-size: .84rem; color: var(--muted); }
+  .detail-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px;
+  }
+  .detail-stats > div {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 10px 6px; text-align: center;
+  }
+  .detail-stats b {
+    display: block; font-size: 1.15rem; font-weight: 500;
+    color: var(--text); line-height: 1.1;
+  }
+  .detail-stats span {
+    font-size: .66rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .05em;
+    display: block; margin-top: 3px;
+  }
+  .detail-body {
+    padding: 18px 20px 20px; overflow-y: auto; flex: 1;
+    -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  }
+  .detail-body h3 {
+    font-size: .85rem; font-weight: 500; margin-bottom: 12px; color: var(--text-2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .detail-body h3 i { color: var(--accent); font-size: 12px; }
+
+  .detail-date-group { margin-bottom: 14px; }
+  .detail-date-head {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .78rem; color: var(--text-2);
+    padding: 6px 0; border-bottom: 1px solid var(--border); margin-bottom: 6px;
+  }
+  .detail-date-head i { color: var(--accent); font-size: 11px; }
+  .detail-date-head strong { font-weight: 500; }
+  .detail-date-head .count {
+    margin-left: auto; color: var(--muted); font-size: .7rem;
+  }
+  .detail-subject-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; background: var(--bg-soft); border-radius: 6px;
+    font-size: .82rem; color: var(--text-2); margin-bottom: 4px;
+  }
+  .detail-subject-row i { color: var(--success); font-size: 11px; }
+
+  .detail-empty {
+    text-align: center; padding: 32px 16px; color: var(--muted); font-size: .85rem;
+  }
+  .detail-empty i {
+    display: block; font-size: 28px; margin-bottom: 10px; opacity: .4;
+  }
+
+  /* ============ Mobile ============ */
   @media (max-width: 640px) {
     body { padding: 12px 12px calc(96px + env(safe-area-inset-bottom)); font-size: 14px; }
     .topbar { padding: 10px 12px; margin-bottom: 16px; border-radius: var(--r); }
@@ -383,12 +535,12 @@
     .brand h1 { font-size: .98rem; }
     .icon-btn { width: 36px; height: 36px; font-size: 14px; }
     .search-input { padding: 11px 40px 11px 40px; font-size: 16px; }
-    .search-wrap { margin-bottom: 16px; }
+    .search-wrap { margin-bottom: 14px; }
     .grid { grid-template-columns: 1fr; gap: 10px; }
     .student-card { padding: 14px; gap: 12px; }
     .avatar { width: 46px; height: 46px; border-radius: 12px; font-size: 14px; }
     .card-name { font-size: .94rem; }
-    .present-num { font-size: 1.22rem; }
+    .present-num { font-size: 1.2rem; }
     .fab { width: 52px; height: 52px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); font-size: 18px; }
     .panel-dialog { max-width: 100%; border-left: none; border-top: 1px solid var(--border); }
     .panel-body { padding: 16px; }
@@ -399,10 +551,26 @@
     .student-row { padding: 8px 10px; gap: 10px; }
     .student-row .avatar { width: 36px; height: 36px; font-size: 12px; }
     .mark-btn { width: 38px; height: 38px; font-size: 14px; }
+    .detail-dialog { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 90vh; border-bottom: none; }
+    #studentDetail.modal { align-items: end; padding: 0; }
+    .detail-hero { padding: 24px 16px 16px; }
+    .detail-hero .avatar { width: 68px; height: 68px; border-radius: 18px; font-size: 22px; }
+    .detail-body { padding: 16px; }
+    .admin-row { padding: 10px; gap: 10px; }
+    .admin-row .avatar { width: 34px; height: 34px; font-size: 12px; }
+    .signed-bar { padding: 10px 12px; }
+    .signed-info span { font-size: .78rem; }
   }
   @media (max-width: 380px) {
-    .panel-tab { min-width: 64px; font-size: .74rem; padding: 8px 6px; }
-    .panel-tab i { font-size: 13px; }
+    .panel-tab { min-width: 60px; font-size: .72rem; padding: 8px 4px; }
+    .panel-tab i { font-size: 12px; }
+    .detail-stats b { font-size: 1rem; }
+    .detail-stats span { font-size: .6rem; }
+    .photo-preview { width: 56px; height: 56px; }
+  }
+  @keyframes sheetIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @media (max-width: 640px) {
+    .detail-dialog { animation: sheetIn .25s cubic-bezier(.2,.9,.3,1.05); }
   }
 </style>
 </head>
@@ -428,6 +596,7 @@
 
 <button id="adminFab" class="fab" aria-label="Open admin panel"><i class="fa-solid fa-user-shield"></i></button>
 
+<!-- Admin panel -->
 <div id="adminPanel" class="panel hidden">
   <div class="panel-backdrop" data-close-panel></div>
   <aside class="panel-dialog" role="dialog" aria-modal="true">
@@ -484,17 +653,35 @@
       <div class="ptab-view" id="ptab-add">
         <div class="section">
           <h3>Add New Student</h3>
-          <p class="hint">Enter name and roll number to register.</p>
+          <p class="hint">Enter name, roll and optional photo.</p>
           <form id="addStudentForm" novalidate>
-            <div class="field" style="margin-bottom:12px;">
+            <div class="field" style="margin-bottom:14px;">
               <label for="addName">Full Name</label>
               <input id="addName" class="input" name="name" placeholder="e.g. Rahim Uddin" autocomplete="off" />
               <span class="field-error" data-error-for="addName"></span>
             </div>
-            <div class="field" style="margin-bottom:16px;">
+            <div class="field" style="margin-bottom:14px;">
               <label for="addRoll">Roll Number</label>
               <input id="addRoll" class="input" name="roll" placeholder="e.g. 101" autocomplete="off" inputmode="numeric" />
               <span class="field-error" data-error-for="addRoll"></span>
+            </div>
+            <div class="field" style="margin-bottom:18px;">
+              <label>Profile Photo (optional)</label>
+              <div class="photo-upload">
+                <div id="photoPreview" class="photo-preview"><i class="fa-solid fa-camera"></i></div>
+                <div class="photo-actions">
+                  <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0;">
+                    <i class="fa-solid fa-upload"></i> Upload
+                    <input type="file" id="photoInput" accept="image/*" hidden />
+                  </label>
+                  <button type="button" id="photoClear" class="btn btn-ghost btn-sm">
+                    <i class="fa-solid fa-xmark"></i> Clear
+                  </button>
+                </div>
+              </div>
+              <small style="font-size:.72rem;color:var(--muted);margin-top:4px;display:block;">
+                <i class="fa-solid fa-circle-info"></i> Auto-compressed to ~15KB and stored in Firestore — no subscription needed.
+              </small>
             </div>
             <button type="submit" class="btn btn-primary btn-block">
               <i class="fa-solid fa-plus"></i> Add Student
@@ -503,11 +690,11 @@
         </div>
       </div>
 
-      <!-- Present (NEW SESSION-BASED) -->
+      <!-- Present (Session-based) -->
       <div class="ptab-view hidden" id="ptab-present">
         <div class="section">
           <h3>Session Setup</h3>
-          <p class="hint">Select a subject and date to mark attendance for the whole class.</p>
+          <p class="hint">Select a subject and date to mark attendance.</p>
           <div class="field" style="margin-bottom:12px;">
             <label for="sessSubject">Subject</label>
             <input id="sessSubject" class="input" placeholder="e.g. Math" list="subjectList" autocomplete="off" />
@@ -522,7 +709,7 @@
         <div id="sessionPrompt" class="section">
           <p style="text-align:center;color:var(--muted);font-size:.85rem;padding:16px 0;">
             <i class="fa-solid fa-arrow-up" style="display:block;font-size:22px;margin-bottom:10px;opacity:.5;"></i>
-            Select a subject and date to start marking students.
+            Select a subject and date to start marking.
           </p>
         </div>
 
@@ -542,7 +729,7 @@
             <h3>Manage Students</h3>
             <span id="adminCount" style="font-size:.76rem;color:var(--muted);"></span>
           </div>
-          <p class="hint">Remove students who are no longer enrolled.</p>
+          <p class="hint">Update photos or remove students.</p>
           <div id="adminList"></div>
         </div>
       </div>
@@ -564,8 +751,40 @@
   </aside>
 </div>
 
+<!-- Hidden file input for updating photos -->
+<input type="file" id="managePhotoInput" accept="image/*" hidden />
+
+<!-- Student detail modal -->
+<div id="studentDetail" class="modal hidden">
+  <div class="modal-backdrop" data-close-detail></div>
+  <div class="detail-dialog">
+    <button class="detail-close" data-close-detail aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="detail-hero">
+      <div id="detailAvatarWrap"></div>
+      <h2 id="detailName"></h2>
+      <p id="detailRoll"></p>
+      <div class="detail-stats">
+        <div><b id="detailTotal">0</b><span>Total</span></div>
+        <div><b id="detailDays">0</b><span>Days</span></div>
+        <div><b id="detailSubjects">0</b><span>Subjects</span></div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <h3><i class="fa-regular fa-calendar-check"></i> Present History</h3>
+      <div id="detailHistory">
+        <div class="detail-empty">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
 <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i><span></span></div>
 
+<!-- Confirm modal -->
 <div id="confirmModal" class="modal hidden">
   <div class="modal-backdrop" data-close-confirm></div>
   <div class="modal-dialog">
@@ -581,8 +800,8 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, doc, addDoc, deleteDoc, getDocs,
-  query, where, onSnapshot, orderBy, limit, serverTimestamp, runTransaction
+  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDocs,
+  query, where, onSnapshot, orderBy, limit, serverTimestamp, runTransaction, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
@@ -603,7 +822,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const studentsCol = collection(db, "students");
 const logsCol = collection(db, "attendance_logs");
-const sessionsCol = collection(db, "attendance_sessions");
+const recordsCol = collection(db, "attendance_records");
 
 /* ---------- 🔴 AUTHORIZED EMAILS ---------- */
 const AUTHORIZED_EMAILS = [
@@ -633,6 +852,14 @@ const avatarStyle = (name) => {
   const [a, b] = GRADIENTS[hashCode(name) % GRADIENTS.length];
   return `background:linear-gradient(135deg,${a},${b})`;
 };
+function avatarHTML(name, photo, extraClass = "") {
+  const img = photo
+    ? `<img src="${esc(photo)}" alt="" loading="lazy" onerror="this.remove()">`
+    : "";
+  return `<div class="avatar ${extraClass}" style="${avatarStyle(name)}">
+    <span>${esc(initials(name))}</span>${img}
+  </div>`;
+}
 
 function todayStr() {
   const d = new Date();
@@ -643,6 +870,13 @@ function formatDate(dateStr) {
   const [y, m, d] = dateStr.split("-").map(Number);
   if (!y || !m || !d) return dateStr;
   return new Date(y, m-1, d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+function formatTime(d) {
+  const diff = (new Date() - d) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 /* ---------- Toast ---------- */
@@ -656,7 +890,7 @@ function toast(msg, type = "info") {
   toastTimer = setTimeout(() => el.classList.remove("show"), 3400);
 }
 
-/* ---------- Firebase error mapping ---------- */
+/* ---------- Error mapping ---------- */
 function fbError(err) {
   const code = err?.code || "";
   const map = {
@@ -736,6 +970,32 @@ const validateEmail = (v) => {
   return "";
 };
 
+/* ---------- Image processing (compresses to ~15KB) ---------- */
+function processImage(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return reject(new Error("No file"));
+    if (!file.type.startsWith("image/")) return reject(new Error("Not an image"));
+    if (file.size > 10 * 1024 * 1024) return reject(new Error("Image too large (max 10MB)"));
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 200;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(img.width * scale));
+        c.height = Math.max(1, Math.round(img.height * scale));
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL("image/jpeg", 0.72));
+      };
+      img.onerror = () => reject(new Error("Invalid image"));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error("Read error"));
+    reader.readAsDataURL(file);
+  });
+}
+
 /* ---------- Skeleton ---------- */
 function renderSkeleton() {
   $("studentsGrid").innerHTML = Array.from({ length: 6 }).map(() => `
@@ -763,21 +1023,22 @@ const searchClear = $("searchClear");
 function cardHTML(s, i) {
   const subs = (s.subjects && typeof s.subjects === "object") ? s.subjects : {};
   const chips = Object.entries(subs)
-    .filter(([, v]) => Number(v) > 0).sort((a, b) => b[1] - a[1]).slice(0, 4)
+    .filter(([, v]) => Number(v) > 0).sort((a, b) => b[1] - a[1]).slice(0, 3)
     .map(([k, v]) => `<span class="chip">${esc(k)} · ${Number(v)}</span>`).join("");
   return `
-    <article class="student-card" style="animation-delay:${Math.min(i*25,250)}ms">
-      <div class="avatar" style="${avatarStyle(s.name)}">${esc(initials(s.name))}</div>
+    <button type="button" class="student-card" data-student="${esc(s.id)}" style="animation-delay:${Math.min(i*25,250)}ms">
+      ${avatarHTML(s.name, s.photo)}
       <div class="card-body">
-        <h3 class="card-name" title="${esc(s.name)}">${esc(s.name)}</h3>
-        <p class="card-roll">Roll ${esc(s.roll)}</p>
+        <div class="card-name" title="${esc(s.name)}">${esc(s.name)}</div>
+        <div class="card-roll">Roll ${esc(s.roll)}</div>
         <div class="card-present">
           <span class="present-num">${Number(s.totalPresent)||0}</span>
           <span class="present-label">Present</span>
         </div>
         ${chips ? `<div class="card-chips">${chips}</div>` : ""}
       </div>
-    </article>`;
+      <i class="fa-solid fa-chevron-right card-chevron"></i>
+    </button>`;
 }
 
 function renderStudents() {
@@ -806,6 +1067,14 @@ function renderStudents() {
   }
   studentsGrid.innerHTML = list.map(cardHTML).join("");
 }
+
+// Event delegation for card clicks
+studentsGrid.addEventListener("click", (e) => {
+  const card = e.target.closest(".student-card");
+  if (!card) return;
+  const id = card.dataset.student;
+  if (id) openStudentDetail(id);
+});
 
 searchInput.addEventListener("input", () => {
   searchQuery = searchInput.value;
@@ -861,7 +1130,10 @@ adminFab.addEventListener("click", openPanel);
 $("panelClose").addEventListener("click", closePanel);
 document.querySelectorAll("[data-close-panel]").forEach(el => el.addEventListener("click", closePanel));
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !adminPanel.classList.contains("hidden")) closePanel();
+  if (e.key === "Escape") {
+    if (!$("studentDetail").classList.contains("hidden")) closeDetail();
+    else if (!adminPanel.classList.contains("hidden")) closePanel();
+  }
 });
 
 /* ---------- Panel tabs ---------- */
@@ -873,6 +1145,103 @@ document.querySelectorAll(".panel-tab").forEach(tab => {
     $(`ptab-${tab.dataset.ptab}`).classList.remove("hidden");
   });
 });
+
+/* ==========================================================
+   STUDENT DETAIL — click card → date-wise present history
+   ========================================================== */
+async function openStudentDetail(studentId) {
+  const student = students.find(s => s.id === studentId);
+  if (!student) return toast("Student not found", "error");
+
+  $("detailAvatarWrap").innerHTML = avatarHTML(student.name, student.photo);
+  // Make avatar bigger inside detail hero
+  const av = $("detailAvatarWrap").querySelector(".avatar");
+  if (av) {
+    av.style.width = "76px";
+    av.style.height = "76px";
+    av.style.borderRadius = "20px";
+    av.style.fontSize = "24px";
+    av.style.margin = "0 auto 14px";
+    av.style.boxShadow = "var(--shadow-md)";
+  }
+  $("detailName").textContent = student.name;
+  $("detailRoll").textContent = `Roll ${student.roll}`;
+  $("detailTotal").textContent = Number(student.totalPresent) || 0;
+  $("detailDays").textContent = "—";
+  $("detailSubjects").textContent = "—";
+  $("detailHistory").innerHTML = `
+    <div class="detail-empty">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Loading history...
+    </div>`;
+
+  $("studentDetail").classList.remove("hidden");
+  document.body.classList.add("lock");
+
+  try {
+    const snap = await getDocs(query(recordsCol, where("studentId", "==", studentId)));
+    const presents = snap.docs
+      .map(d => d.data())
+      .filter(r => r.status === "present");
+
+    if (!presents.length) {
+      $("detailDays").textContent = "0";
+      $("detailSubjects").textContent = "0";
+      $("detailHistory").innerHTML = `
+        <div class="detail-empty">
+          <i class="fa-regular fa-calendar"></i>
+          No present records yet.<br>
+          <span style="font-size:.78rem;">Attendance will appear here once marked.</span>
+        </div>`;
+      return;
+    }
+
+    // Group by date
+    const byDate = {};
+    const subjectSet = new Set();
+    presents.forEach(r => {
+      if (!byDate[r.date]) byDate[r.date] = [];
+      byDate[r.date].push(r.subject);
+      subjectSet.add(r.subject);
+    });
+
+    $("detailDays").textContent = Object.keys(byDate).length;
+    $("detailSubjects").textContent = subjectSet.size;
+
+    const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+    $("detailHistory").innerHTML = sortedDates.map(date => {
+      const subs = [...new Set(byDate[date])].sort();
+      return `
+        <div class="detail-date-group">
+          <div class="detail-date-head">
+            <i class="fa-regular fa-calendar"></i>
+            <strong>${esc(formatDate(date))}</strong>
+            <span class="count">${subs.length} subject${subs.length > 1 ? "s" : ""}</span>
+          </div>
+          ${subs.map(s => `
+            <div class="detail-subject-row">
+              <i class="fa-solid fa-check"></i>
+              <span>${esc(s)}</span>
+            </div>`).join("")}
+        </div>`;
+    }).join("");
+  } catch (err) {
+    console.error(err);
+    $("detailHistory").innerHTML = `
+      <div class="detail-empty">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Could not load history.<br>
+        <span style="font-size:.76rem;color:var(--danger-text);">${esc(fbError(err))}</span>
+      </div>`;
+  }
+}
+
+function closeDetail() {
+  $("studentDetail").classList.add("hidden");
+  document.body.classList.remove("lock");
+}
+$("studentDetail").querySelectorAll("[data-close-detail]").forEach(el =>
+  el.addEventListener("click", closeDetail));
 
 /* ---------- Auth ---------- */
 const loginView = $("loginView");
@@ -951,7 +1320,39 @@ $("logoutBtn").addEventListener("click", async () => {
   catch (err) { toast(fbError(err), "error"); }
 });
 
-/* ---------- Add student ---------- */
+/* ---------- Add student with photo ---------- */
+let addPhotoData = "";
+const photoInput = $("photoInput");
+const photoPreview = $("photoPreview");
+
+function updatePhotoPreview() {
+  if (addPhotoData) {
+    photoPreview.style.backgroundImage = `url(${addPhotoData})`;
+    photoPreview.classList.add("has-image");
+    photoPreview.innerHTML = "";
+  } else {
+    photoPreview.style.backgroundImage = "";
+    photoPreview.classList.remove("has-image");
+    photoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
+  }
+}
+photoInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    addPhotoData = await processImage(file);
+    updatePhotoPreview();
+  } catch (err) {
+    toast(err.message, "error");
+    e.target.value = "";
+  }
+});
+$("photoClear").addEventListener("click", () => {
+  addPhotoData = "";
+  photoInput.value = "";
+  updatePhotoPreview();
+});
+
 const addForm = $("addStudentForm");
 addForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -974,9 +1375,16 @@ addForm.addEventListener("submit", async (e) => {
       return;
     }
     await addDoc(studentsCol, {
-      name, roll, subjects: {}, totalPresent: 0, createdAt: serverTimestamp()
+      name, roll,
+      photo: addPhotoData || "",
+      subjects: {},
+      totalPresent: 0,
+      createdAt: serverTimestamp()
     });
     addForm.reset();
+    addPhotoData = "";
+    photoInput.value = "";
+    updatePhotoPreview();
     nameEl.focus();
     toast(`${name} added successfully`, "success");
   } catch (err) {
@@ -989,45 +1397,37 @@ addForm.addEventListener("submit", async (e) => {
 });
 
 /* ==========================================================
-   PRESENT SESSION (NEW)
-   Flow: choose subject + date → list of all students with ✗ / ✓
-   Each click writes atomically:
-     - attendance_sessions/{date__subject} .records[studentId] = {status, markedAt}
-     - students/{id}.totalPresent & students/{id}.subjects.{subject} updated
-   Clicking the same button again toggles the mark off.
+   PRESENT SESSION
    ========================================================== */
 let sessionSubject = "";
 let sessionDate = "";
 let sessionRecords = {};
-let currentSessionUnsub = null;
+let sessionUnsub = null;
 
-function sessionDocId(date, subject) {
+function recordDocId(date, subject, studentId) {
   const safe = subject.replace(/[.\[\]/*~`]/g, "_").trim();
-  return `${date}__${safe}`;
+  return `${date}__${safe}__${studentId}`;
 }
 
 function watchSession() {
-  if (currentSessionUnsub) { currentSessionUnsub(); currentSessionUnsub = null; }
-
+  if (sessionUnsub) { sessionUnsub(); sessionUnsub = null; }
   const subject = $("sessSubject").value.trim();
   const date = $("sessDate").value;
-
   sessionSubject = subject;
   sessionDate = date;
   sessionRecords = {};
 
-  if (!subject || !date) {
-    renderSessionList();
-    return;
-  }
+  if (!subject || !date) { renderSessionList(); return; }
+  renderSessionList();
 
-  renderSessionList(); // show setup immediately (empty state)
-
-  const sid = sessionDocId(date, subject);
-  currentSessionUnsub = onSnapshot(
-    doc(db, "attendance_sessions", sid),
+  sessionUnsub = onSnapshot(
+    query(recordsCol, where("date", "==", date), where("subject", "==", subject)),
     (snap) => {
-      sessionRecords = snap.exists() ? (snap.data().records || {}) : {};
+      sessionRecords = {};
+      snap.docs.forEach(d => {
+        const r = d.data();
+        sessionRecords[r.studentId] = { status: r.status, markedAt: r.markedAt };
+      });
       renderSessionList();
     },
     (err) => {
@@ -1036,7 +1436,6 @@ function watchSession() {
     }
   );
 }
-
 $("sessSubject").addEventListener("input", watchSession);
 $("sessDate").addEventListener("change", watchSession);
 $("sessDate").value = todayStr();
@@ -1076,7 +1475,7 @@ function renderSessionList() {
     return `
       <div class="student-row ${st === "present" ? "is-present" : ""} ${st === "absent" ? "is-absent" : ""}"
            style="animation-delay:${Math.min(i*15, 200)}ms">
-        <div class="avatar" style="${avatarStyle(s.name)}">${esc(initials(s.name))}</div>
+        ${avatarHTML(s.name, s.photo)}
         <div class="student-row-body">
           <h4 title="${esc(s.name)}">${esc(s.name)}</h4>
           <small>Roll ${esc(s.roll)}</small>
@@ -1110,8 +1509,8 @@ async function markStudent(studentId, newStatus, btn) {
   const subject = sessionSubject;
   const date = sessionDate;
   const sanitizedSubject = subject.replace(/[.\[\]/*~`]/g, "_").trim();
-  const sessionId = sessionDocId(date, subject);
-  const sessionRef = doc(db, "attendance_sessions", sessionId);
+  const recordId = recordDocId(date, subject, studentId);
+  const recordRef = doc(recordsCol, recordId);
   const studentRef = doc(db, "students", studentId);
 
   let wasPresent = false;
@@ -1119,41 +1518,39 @@ async function markStudent(studentId, newStatus, btn) {
 
   try {
     await runTransaction(db, async (tx) => {
-      const sessionSnap = await tx.get(sessionRef);
+      const recordSnap = await tx.get(recordRef);
       const studentSnap = await tx.get(studentRef);
       if (!studentSnap.exists()) throw new Error("Student no longer exists");
 
-      const records = sessionSnap.exists() ? { ...(sessionSnap.data().records || {}) } : {};
-      const prevStatus = records[studentId]?.status;
+      const prevStatus = recordSnap.exists() ? recordSnap.data().status : null;
       wasPresent = prevStatus === "present";
 
+      const sdata = studentSnap.data();
+      const currentTotal = Number(sdata.totalPresent) || 0;
+      const currentSubj = Number(sdata.subjects?.[sanitizedSubject]) || 0;
+
       let finalStatus = newStatus;
+      let newTotal = currentTotal;
+      let newSubj = currentSubj;
+
       if (prevStatus === newStatus) {
         // toggle off
-        delete records[studentId];
+        tx.delete(recordRef);
         finalStatus = null;
       } else {
-        records[studentId] = { status: newStatus, markedAt: Date.now() };
-      }
-      isPresent = finalStatus === "present";
-
-      if (sessionSnap.exists()) {
-        tx.update(sessionRef, { records, updatedAt: serverTimestamp() });
-      } else {
-        tx.set(sessionRef, {
-          date, subject, records,
-          markedBy: auth.currentUser?.email || "",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+        tx.set(recordRef, {
+          studentId,
+          studentName: sdata.name || "",
+          studentRoll: sdata.roll || "",
+          date,
+          subject: sanitizedSubject,
+          status: newStatus,
+          markedAt: Date.now(),
+          markedBy: auth.currentUser?.email || ""
         });
       }
 
-      // Student counters — atomic
-      const data = studentSnap.data();
-      const currentTotal = Number(data.totalPresent) || 0;
-      const currentSubj = Number(data.subjects?.[sanitizedSubject]) || 0;
-      let newTotal = currentTotal;
-      let newSubj = currentSubj;
+      isPresent = finalStatus === "present";
 
       if (isPresent && !wasPresent) { newTotal += 1; newSubj += 1; }
       else if (!isPresent && wasPresent) {
@@ -1170,7 +1567,6 @@ async function markStudent(studentId, newStatus, btn) {
       }
     });
 
-    // Log only on newly-marked present (for activity feed)
     if (isPresent && !wasPresent) {
       const st = students.find(s => s.id === studentId);
       addDoc(logsCol, {
@@ -1196,6 +1592,8 @@ let pendingDeleteId = null;
 const confirmModal = $("confirmModal");
 const confirmMsg = $("confirmMsg");
 const confirmOk = $("confirmOk");
+const managePhotoInput = $("managePhotoInput");
+let photoUpdateTargetId = null;
 
 function closeConfirm() {
   confirmModal.classList.add("hidden");
@@ -1203,7 +1601,8 @@ function closeConfirm() {
   confirmOk.disabled = false;
   confirmOk.textContent = "Delete";
 }
-confirmModal.querySelectorAll("[data-close-confirm]").forEach(el => el.addEventListener("click", closeConfirm));
+confirmModal.querySelectorAll("[data-close-confirm]").forEach(el =>
+  el.addEventListener("click", closeConfirm));
 
 confirmOk.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
@@ -1212,6 +1611,20 @@ confirmOk.addEventListener("click", async () => {
   confirmOk.disabled = true;
   confirmOk.textContent = "Deleting...";
   try {
+    // Cleanup orphan records first (best effort)
+    try {
+      const snap = await getDocs(query(recordsCol, where("studentId", "==", id)));
+      if (!snap.empty) {
+        const batch = writeBatch(db);
+        let count = 0;
+        for (const d of snap.docs) {
+          batch.delete(d.ref);
+          if (++count >= 400) break;
+        }
+        await batch.commit();
+      }
+    } catch (e) { console.warn("Record cleanup failed:", e); }
+
     await deleteDoc(doc(db, "students", id));
     toast(`Deleted: ${st?.name || "student"}`, "success");
     closeConfirm();
@@ -1220,6 +1633,23 @@ confirmOk.addEventListener("click", async () => {
     toast(fbError(err), "error");
     confirmOk.disabled = false;
     confirmOk.textContent = "Delete";
+  }
+});
+
+managePhotoInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file || !photoUpdateTargetId) return;
+  const targetId = photoUpdateTargetId;
+  photoUpdateTargetId = null;
+  try {
+    const data = await processImage(file);
+    await updateDoc(doc(db, "students", targetId), { photo: data });
+    toast("Photo updated", "success");
+  } catch (err) {
+    console.error(err);
+    toast(err.message || fbError(err), "error");
+  } finally {
+    e.target.value = "";
   }
 });
 
@@ -1239,21 +1669,33 @@ function renderAdminList() {
 
   el.innerHTML = sorted.map(s => `
     <div class="admin-row">
-      <div class="avatar" style="${avatarStyle(s.name)}">${esc(initials(s.name))}</div>
+      ${avatarHTML(s.name, s.photo)}
       <div class="admin-row-body">
         <h4 title="${esc(s.name)}">${esc(s.name)}</h4>
         <small>Roll ${esc(s.roll)} · ${Number(s.totalPresent)||0} present</small>
       </div>
-      <button class="btn btn-danger btn-sm" data-del="${esc(s.id)}" data-name="${esc(s.name)}">
-        <i class="fa-solid fa-trash"></i>
-      </button>
+      <div class="admin-row-actions">
+        <button class="btn-icon-sm" data-photo="${esc(s.id)}" title="Update photo" aria-label="Update photo">
+          <i class="fa-solid fa-camera"></i>
+        </button>
+        <button class="btn-icon-sm" data-del="${esc(s.id)}" data-name="${esc(s.name)}" title="Delete" aria-label="Delete">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
     </div>
   `).join("");
+
+  el.querySelectorAll("[data-photo]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      photoUpdateTargetId = btn.dataset.photo;
+      managePhotoInput.click();
+    });
+  });
 
   el.querySelectorAll("[data-del]").forEach(btn => {
     btn.addEventListener("click", () => {
       pendingDeleteId = btn.dataset.del;
-      confirmMsg.textContent = `"${btn.dataset.name}" will be permanently removed. This cannot be undone.`;
+      confirmMsg.textContent = `"${btn.dataset.name}" will be permanently removed along with their attendance records.`;
       confirmModal.classList.remove("hidden");
     });
   });
@@ -1290,14 +1732,6 @@ onSnapshot(
     if (el) el.innerHTML = `<p class="hint" style="margin:0;color:var(--danger-text);">Activity unavailable: ${esc(fbError(err))}</p>`;
   }
 );
-
-function formatTime(d) {
-  const diff = (new Date() - d) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
 
 /* ---------- Init ---------- */
 renderSkeleton();
