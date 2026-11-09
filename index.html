@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Class Attendance Management System</title>
+<style>
+  :root{
+    --bg:#eef2ff;
+    --bg2:#f8fafc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e5e9f2;
+    --primary:#4f46e5;
+    --primary-soft:#eef2ff;
+    --green:#10b981;
+    --green-soft:#ecfdf5;
+    --red:#ef4444;
+    --shadow:0 8px 24px rgba(15,23,42,.07);
+    --radius:16px;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1120;
+    --bg2:#111a2e;
+    --card:#151e31;
+    --text:#e2e8f0;
+    --muted:#94a3b8;
+    --border:#233047;
+    --primary:#818cf8;
+    --primary-soft:#1e293b;
+    --green:#34d399;
+    --green-soft:#123528;
+    --shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,"Noto Sans Bengali",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding:20px 16px 70px;
+    transition:background .3s,color .3s;
+  }
+  .app{max-width:1100px;margin:0 auto;}
+  .hidden{display:none !important;}
+  .muted{color:var(--muted);}
+
+  /* ---------- Header ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:#fff;padding:20px 24px;border-radius:20px;
+    box-shadow:0 12px 30px rgba(79,70,229,.35);
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo{
+    width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.2);
+    display:grid;place-items:center;font-size:26px;flex:0 0 auto;
+  }
+  .brand h1{font-size:1.25rem;font-weight:700;letter-spacing:.3px;}
+  .brand p{font-size:.8rem;opacity:.85;margin-top:2px;}
+  .icon-btn{
+    background:rgba(255,255,255,.18);border:0;color:#fff;width:44px;height:44px;
+    border-radius:14px;font-size:20px;cursor:pointer;transition:.2s;flex:0 0 auto;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.32);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:10px;margin:22px 0;flex-wrap:wrap;}
+  .tab{
+    flex:1 1 170px;padding:14px 18px;border-radius:14px;border:1px solid var(--border);
+    background:var(--card);color:var(--muted);font-weight:600;font-size:.95rem;
+    cursor:pointer;transition:.2s;box-shadow:var(--shadow);font-family:inherit;
+  }
+  .tab:hover{transform:translateY(-2px);}
+  .tab.active{
+    background:var(--primary);color:#fff;border-color:transparent;
+    box-shadow:0 10px 24px rgba(79,70,229,.35);
+  }
+
+  .view{display:none;animation:fade .25s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ---------- Inputs ---------- */
+  .input{
+    flex:1 1 200px;width:100%;padding:12px 16px;border-radius:12px;
+    border:1px solid var(--border);background:var(--card);color:var(--text);
+    font-size:.95rem;outline:none;transition:.2s;font-family:inherit;
+  }
+  .input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft);}
+  select.input{cursor:pointer;}
+
+  .toolbar{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+
+  /* ---------- Student cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:16px;}
+
+  .student-card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px;display:flex;gap:14px;box-shadow:var(--shadow);transition:.25s;
+  }
+  .student-card:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(15,23,42,.14);}
+
+  .avatar{
+    width:62px;height:62px;border-radius:18px;flex:0 0 auto;position:relative;
+    overflow:hidden;background:linear-gradient(135deg,#6366f1,#a855f7);
+    color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.15rem;
+  }
+  .avatar span{position:relative;z-index:0;}
+  .avatar img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;
+  }
+
+  .s-info{flex:1;min-width:0;}
+  .s-info h3{
+    font-size:1rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .roll{font-size:.82rem;color:var(--muted);margin-top:3px;}
+
+  .present-row{display:flex;align-items:center;gap:9px;margin-top:11px;}
+  .present-num{
+    font-size:1.45rem;font-weight:800;color:var(--green);line-height:1;
+    background:var(--green-soft);padding:4px 12px;border-radius:11px;
+  }
+  .present-label{
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.7px;
+    color:var(--muted);font-weight:700;
+  }
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .chip{
+    background:var(--primary-soft);color:var(--primary);
+    font-size:.72rem;font-weight:600;padding:4px 9px;border-radius:999px;
+  }
+
+  .empty{text-align:center;padding:56px 20px;color:var(--muted);font-size:.95rem;}
+
+  /* ---------- Cards / forms ---------- */
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);margin-bottom:18px;
+  }
+  .card h2{font-size:1.05rem;margin-bottom:4px;}
+  .hint{font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+
+  .field{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .field label{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.3px;}
+
+  .btn{
+    padding:12px 22px;border-radius:12px;border:0;font-weight:700;font-size:.92rem;
+    cursor:pointer;transition:.2s;font-family:inherit;display:inline-flex;
+    align-items:center;gap:8px;justify-content:center;
+  }
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3);}
+  .btn-primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);}
+  .btn-green{background:var(--green);color:#fff;box-shadow:0 8px 20px rgba(16,185,129,.3);}
+  .btn-green:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
+  .btn-ghost:hover{background:var(--bg2);}
+  .btn-danger{background:var(--red);color:#fff;padding:8px 14px;font-size:.8rem;border-radius:10px;}
+
+  .login-card{max-width:420px;margin:40px auto;text-align:center;}
+  .login-form{display:flex;flex-direction:column;gap:12px;}
+
+  .admin-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--card);border:1px solid var(--border);border-radius:14px;
+    padding:12px 18px;margin-bottom:18px;box-shadow:var(--shadow);font-size:.9rem;font-weight:600;
+  }
+
+  .activity{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto;}
+  .activity-item{
+    display:flex;justify-content:space-between;gap:10px;padding:11px 13px;
+    border-radius:11px;background:var(--bg2);border:1px solid var(--border);font-size:.85rem;
+  }
+  .activity-item .time{color:var(--muted);font-size:.76rem;white-space:nowrap;}
+
+  .admin-row{
+    display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;
+    background:var(--bg2);border:1px solid var(--border);margin-bottom:8px;
+  }
+  .admin-row .avatar{width:40px;height:40px;border-radius:12px;font-size:.9rem;}
+  .admin-row .grow{flex:1;min-width:0;}
+  .admin-row h4{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .admin-row small{color:var(--muted);font-size:.76rem;}
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,160%);
+    background:#0f172a;color:#fff;padding:14px 22px;border-radius:14px;
+    font-size:.9rem;font-weight:600;box-shadow:0 16px 40px rgba(0,0,0,.3);
+    transition:transform .35s cubic-bezier(.2,.9,.3,1.3);z-index:99;
+    max-width:90vw;text-align:center;
+  }
+  .toast.show{transform:translate(-50%,0);}
+  .toast.error{background:#dc2626;}
+  .toast.success{background:#059669;}
+
+  @media(max-width:520px){
+    .topbar{padding:16px;border-radius:16px;}
+    .brand h1{font-size:1.05rem;}
+    .logo{width:44px;height:44px;font-size:22px;}
+    .tab{flex:1 1 100%;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">📋</div>
+      <div>
+        <h1>Class Attendance</h1>
+        <p>Manage &amp; view student attendance</p>
+      </div>
+    </div>
+    <button id="themeBtn" class="icon-btn" title="Toggle theme">🌙</button>
+  </header>
+
+  <!-- ===== Tabs ===== -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="students">👨‍🎓 Students</button>
+    <button class="tab" data-tab="admin">🔐 Admin Panel</button>
+  </nav>
+
+  <main>
+    <!-- ===== Students (Public) ===== -->
+    <section id="studentsView" class="view active">
+      <div class="toolbar">
+        <input id="searchInput" class="input" type="search" placeholder="🔍 Search by name or roll..." />
+        <select id="sortSelect" class="input" style="flex:0 1 200px;">
+          <option value="roll">Sort: Roll (A→Z)</option>
+          <option value="name">Sort: Name</option>
+          <option value="present">Sort: Most Present</option>
+        </select>
+      </div>
+
+      <div id="studentsGrid" class="grid"></div>
+      <div id="emptyState" class="empty hidden">No students added yet.</div>
+    </section>
+
+    <!-- ===== Admin ===== -->
+    <section id="adminView" class="view">
+
+      <!-- Login -->
+      <div id="loginCard" class="card login-card">
+        <h2>🔐 Admin Login</h2>
+        <p class="hint">Only admin can add students &amp; mark attendance.</p>
+        <form id="loginForm" class="login-form">
+          <input id="adminPass" class="input" type="password" placeholder="Admin password" required />
+          <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="adminDashboard" class="hidden">
+
+        <div class="admin-bar">
+          <span>✅ Logged in as Admin</span>
+          <button id="logoutBtn" class="btn btn-ghost" style="padding:8px 16px;font-size:.82rem;">Logout</button>
+        </div>
+
+        <!-- Add student -->
+        <div class="card">
+          <h2>➕ Add New Student</h2>
+          <p class="hint">Student er naam, roll &amp; profile photo diye add korun.</p>
+          <form id="addStudentForm">
+            <div class="form-grid">
+              <div class="field">
+                <label>Full Name</label>
+                <input class="input" name="name" required placeholder="e.g. Rahim Uddin" />
+              </div>
+              <div class="field">
+                <label>Roll Number</label>
+                <input class="input" name="roll" required placeholder="e.g. 101" />
+              </div>
+              <div class="field">
+                <label>Profile Photo (upload)</label>
+                <input class="input" type="file" name="photo" accept="image/*" />
+              </div>
+              <div class="field">
+                <label>Or Photo URL</label>
+                <input class="input" name="photoUrl" placeholder="https://..." />
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit" style="margin-top:16px;">Add Student</button>
+          </form>
+        </div>
+
+        <!-- Mark present -->
+        <div class="card">
+          <h2>✅ Mark Present</h2>
+          <p class="hint">Roll &amp; subject likhun — oi student er present count +1 hobe.</p>
+          <form id="presentForm">
+            <div class="form-grid">
+              <div class="field">
+                <label>Roll Number</label>
+                <input id="pRoll" class="input" required placeholder="e.g. 101" />
+              </div>
+              <div class="field">
+                <label>Subject</label>
+                <input id="pSubject" class="input" required placeholder="e.g. Math" list="subjectList" />
+                <datalist id="subjectList"></datalist>
+              </div>
+            </div>
+            <button class="btn btn-green" type="submit" style="margin-top:16px;">Mark Present</button>
+          </form>
+        </div>
+
+        <!-- Activity -->
+        <div class="card">
+          <h2>🕒 Recent Activity</h2>
+          <p class="hint">Last 15 attendance entries.</p>
+          <div id="activityList" class="activity">
+            <p class="hint" style="margin:0;">No activity yet.</p>
+          </div>
+        </div>
+
+        <!-- Manage -->
+        <div class="card">
+          <h2>🗂 Manage Students</h2>
+          <p class="hint">Student delete korte parben.</p>
+          <div id="adminList"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ======================= SCRIPT ======================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, updateDoc, deleteDoc,
+  getDocs, query, where, onSnapshot, orderBy, limit, increment, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+/* ---------- Firebase config ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyAclLFCouG4exFxs0wYsWhlhAqf2y4LmlI",
+  authDomain: "present-manage.firebaseapp.com",
+  projectId: "present-manage",
+  storageBucket: "present-manage.firebasestorage.app",
+  messagingSenderId: "947767975289",
+  appId: "1:947767975289:web:62d0491cae58fbdfeee3a8",
+  measurementId: "G-NKHC7XHBT1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const studentsCol = collection(db, "students");
+const logsCol = collection(db, "attendance_logs");
+
+/* ---------- Config ---------- */
+const ADMIN_PASSWORD = "admin123"; // 🔴 Change this!
+
+/* ---------- Helpers ---------- */
+const $ = (id) => document.getElementById(id);
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+function initials(name) {
+  const parts = String(name || "?").trim().split(/\s+/).slice(0, 2);
+  return parts.map(w => w[0] || "").join("").toUpperCase() || "?";
+}
+
+let toastTimer;
+function toast(msg, type = "success") {
+  const el = $("toast");
+  el.textContent = msg;
+  el.className = "toast show " + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function compressImage(file, max = 320, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(b => b ? resolve(b) : reject(new Error("Image compress failed")), "image/jpeg", quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Invalid image")); };
+    img.src = url;
+  });
+}
+
+function blobToDataURL(blob) {
+  return new Promise(res => {
+    const fr = new FileReader();
+    fr.onload = () => res(fr.result);
+    fr.readAsDataURL(blob);
+  });
+}
+
+async function resolvePhoto(file, url) {
+  if (file && file.size > 0) {
+    const blob = await compressImage(file);
+    try {
+      const path = `profiles/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+      const sref = storageRef(storage, path);
+      await uploadBytes(sref, blob, { contentType: "image/jpeg" });
+      return await getDownloadURL(sref);
+    } catch (err) {
+      console.warn("Storage upload failed, using base64 fallback.", err);
+      return await blobToDataURL(blob);
+    }
+  }
+  return (url || "").trim();
+}
+
+/* ---------- Theme ---------- */
+const themeBtn = $("themeBtn");
+const savedTheme = localStorage.getItem("ca_theme") || "light";
+document.documentElement.dataset.theme = savedTheme;
+themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+
+themeBtn.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("ca_theme", next);
+  themeBtn.textContent = next === "dark" ? "☀️" : "🌙";
+});
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    tab.classList.add("active");
+    $(tab.dataset.tab + "View").classList.add("active");
+  });
+});
+
+/* ---------- State ---------- */
+let students = [];
+let isAdmin = sessionStorage.getItem("ca_admin") === "1";
+
+/* ---------- Render students (public) ---------- */
+const studentsGrid = $("studentsGrid");
+const emptyState = $("emptyState");
+const searchInput = $("searchInput");
+const sortSelect = $("sortSelect");
+
+function cardHTML(s) {
+  const subs = (s.subjects && typeof s.subjects === "object") ? s.subjects : {};
+  const chips = Object.entries(subs)
+    .filter(([, v]) => Number(v) > 0)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<span class="chip">${esc(k)} · ${v}</span>`)
+    .join("");
+
+  const photo = s.photo
+    ? `<div class="avatar"><span>${esc(initials(s.name))}</span><img src="${esc(s.photo)}" alt="" loading="lazy" onerror="this.remove()"></div>`
+    : `<div class="avatar"><span>${esc(initials(s.name))}</span></div>`;
+
+  return `
+    <article class="student-card">
+      ${photo}
+      <div class="s-info">
+        <h3 title="${esc(s.name)}">${esc(s.name)}</h3>
+        <p class="roll">Roll: ${esc(s.roll)}</p>
+        <div class="present-row">
+          <span class="present-num">${Number(s.totalPresent) || 0}</span>
+          <span class="present-label">Present</span>
+        </div>
+        ${chips ? `<div class="chips">${chips}</div>` : ""}
+      </div>
+    </article>`;
+}
+
+function renderStudents() {
+  const term = searchInput.value.trim().toLowerCase();
+  let list = students.filter(s =>
+    !term ||
+    String(s.name || "").toLowerCase().includes(term) ||
+    String(s.roll || "").toLowerCase().includes(term)
+  );
+
+  const by = sortSelect.value;
+  list.sort((a, b) => {
+    if (by === "present") return (Number(b.totalPresent) || 0) - (Number(a.totalPresent) || 0);
+    if (by === "name") return String(a.name || "").localeCompare(String(b.name || ""));
+    return String(a.roll || "").localeCompare(String(b.roll || ""), undefined, { numeric: true });
+  });
+
+  if (!list.length) {
+    studentsGrid.innerHTML = "";
+    emptyState.classList.remove("hidden");
+    emptyState.textContent = students.length
+      ? "No student matches your search."
+      : "No students added yet. Admin panel theke student add korun.";
+    return;
+  }
+
+  emptyState.classList.add("hidden");
+  studentsGrid.innerHTML = list.map(cardHTML).join("");
+}
+
+searchInput.addEventListener("input", renderStudents);
+sortSelect.addEventListener("change", renderStudents);
+
+/* ---------- Render admin list ---------- */
+function renderAdminList() {
+  const el = $("adminList");
+  if (!isAdmin) return;
+
+  if (!students.length) {
+    el.innerHTML = `<p class="hint" style="margin:0;">No students yet.</p>`;
+    return;
+  }
+
+  const sorted = [...students].sort((a, b) =>
+    String(a.roll || "").localeCompare(String(b.roll || ""), undefined, { numeric: true })
+  );
+
+  el.innerHTML = sorted.map(s => `
+    <div class="admin-row">
+      <div class="avatar"><span>${esc(initials(s.name))}</span>${s.photo ? `<img src="${esc(s.photo)}" alt="" onerror="this.remove()">` : ""}</div>
+      <div class="grow">
+        <h4>${esc(s.name)}</h4>
+        <small>Roll: ${esc(s.roll)} · Present: ${Number(s.totalPresent) || 0}</small>
+      </div>
+      <button class="btn btn-danger" data-del="${esc(s.id)}">Delete</button>
+    </div>
+  `).join("");
+
+  el.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.del;
+      const st = students.find(x => x.id === id);
+      if (!confirm(`Delete "${st?.name || "this student"}"?`)) return;
+      btn.disabled = true;
+      try {
+        await deleteDoc(doc(db, "students", id));
+        toast("Student deleted", "success");
+      } catch (e) {
+        btn.disabled = false;
+        toast(e.message, "error");
+      }
+    });
+  });
+}
+
+/* ---------- Subject datalist ---------- */
+function renderSubjectOptions() {
+  const set = new Set();
+  students.forEach(s => {
+    const subs = s.subjects || {};
+    Object.keys(subs).forEach(k => set.add(k));
+  });
+  $("subjectList").innerHTML = [...set].map(k => `<option value="${esc(k)}"></option>`).join("");
+}
+
+/* ---------- Live data ---------- */
+onSnapshot(studentsCol,
+  (snap) => {
+    students = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderStudents();
+    renderAdminList();
+    renderSubjectOptions();
+  },
+  (err) => {
+    console.error(err);
+    toast("Firestore error: " + err.message, "error");
+  }
+);
+
+/* ---------- Activity feed ---------- */
+onSnapshot(
+  query(logsCol, orderBy("createdAt", "desc"), limit(15)),
+  (snap) => {
+    const el = $("activityList");
+    if (snap.empty) {
+      el.innerHTML = `<p class="hint" style="margin:0;">No activity yet.</p>`;
+      return;
+    }
+    el.innerHTML = snap.docs.map(d => {
+      const l = d.data();
+      const t = l.createdAt?.toDate ? l.createdAt.toDate() : null;
+      const time = t ? t.toLocaleString() : "just now";
+      return `<div class="activity-item">
+        <span><strong>${esc(l.name || l.roll || "?")}</strong>
+          <span class="muted">(Roll ${esc(l.roll || "-")})</span> — ${esc(l.subject || "-")}</span>
+        <span class="time">${esc(time)}</span>
+      </div>`;
+    }).join("");
+  },
+  (err) => console.warn("Activity feed:", err.message)
+);
+
+/* ---------- Admin auth ---------- */
+const loginCard = $("loginCard");
+const adminDashboard = $("adminDashboard");
+
+function updateAdminUI() {
+  loginCard.classList.toggle("hidden", isAdmin);
+  adminDashboard.classList.toggle("hidden", !isAdmin);
+  if (isAdmin) renderAdminList();
+}
+
+$("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const pass = $("adminPass").value;
+  if (pass === ADMIN_PASSWORD) {
+    isAdmin = true;
+    sessionStorage.setItem("ca_admin", "1");
+    $("adminPass").value = "";
+    updateAdminUI();
+    toast("Welcome, Admin! 👋", "success");
+  } else {
+    toast("Wrong password!", "error");
+  }
+});
+
+$("logoutBtn").addEventListener("click", () => {
+  isAdmin = false;
+  sessionStorage.removeItem("ca_admin");
+  updateAdminUI();
+  toast("Logged out", "success");
+});
+
+/* ---------- Add student ---------- */
+$("addStudentForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type="submit"]');
+  const fd = new FormData(form);
+
+  const name = String(fd.get("name") || "").trim();
+  const roll = String(fd.get("roll") || "").trim();
+  const photoFile = fd.get("photo");
+  const photoUrl = String(fd.get("photoUrl") || "").trim();
+
+  if (!name || !roll) return toast("Name & roll required", "error");
+
+  btn.disabled = true;
+  btn.textContent = "Adding...";
+
+  try {
+    // duplicate roll check
+    const dup = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    if (!dup.empty) throw new Error(`Roll "${roll}" already exists!`);
+
+    const photo = await resolvePhoto(photoFile, photoUrl);
+
+    await addDoc(studentsCol, {
+      name,
+      roll,
+      photo,
+      subjects: {},
+      totalPresent: 0,
+      createdAt: serverTimestamp()
+    });
+
+    form.reset();
+    toast(`✅ ${name} added successfully!`, "success");
+  } catch (err) {
+    console.error(err);
+    toast(err.message || "Failed to add student", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Add Student";
+  }
+});
+
+/* ---------- Mark present ---------- */
+$("presentForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const roll = $("pRoll").value.trim();
+  const subjectRaw = $("pSubject").value.trim();
+
+  if (!roll || !subjectRaw) return toast("Roll & subject required", "error");
+
+  btn.disabled = true;
+  btn.textContent = "Marking...";
+
+  try {
+    const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    if (snap.empty) throw new Error(`No student found with roll "${roll}"`);
+
+    const studentDoc = snap.docs[0];
+    const data = studentDoc.data();
+
+    // Firestore field path e "." allowed na — sanitize
+    const key = subjectRaw.replace(/[.\[\]/*~\\]/g, "_").trim();
+    if (!key) throw new Error("Invalid subject name");
+
+    await updateDoc(doc(db, "students", studentDoc.id), {
+      [`subjects.${key}`]: increment(1),
+      totalPresent: increment(1),
+      updatedAt: serverTimestamp()
+    });
+
+    await addDoc(logsCol, {
+      studentId: studentDoc.id,
+      name: data.name || "",
+      roll,
+      subject: key,
+      createdAt: serverTimestamp()
+    });
+
+    $("pRoll").value = "";
+    $("pSubject").value = "";
+    $("pRoll").focus();
+
+    toast(`✅ ${data.name || roll} marked present in ${key}`, "success");
+  } catch (err) {
+    console.error(err);
+    toast(err.message || "Failed to mark present", "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Mark Present";
+  }
+});
+
+/* ---------- Init ---------- */
+updateAdminUI();
+</script>
+</body>
+</html>
