@@ -50,6 +50,13 @@
   body.lock { overflow: hidden; }
   .app { max-width: 1200px; margin: 0 auto; }
   .hidden { display: none !important; }
+  .error-banner {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    background: #dc2626; color: #fff; padding: 12px 20px; font-size: .85rem;
+    font-family: monospace; box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    display: none;
+  }
+  .error-banner.show { display: block; }
 
   .topbar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -73,10 +80,7 @@
   .icon-btn:hover { background: var(--bg-soft); color: var(--text); border-color: var(--border-strong); }
   .icon-btn:active { transform: scale(0.94); }
 
-  /* ============ Action box ============ */
-  .action-box {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
-  }
+  .action-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   .action-btn {
     display: flex; align-items: center; gap: 12px; padding: 14px 16px;
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
@@ -88,69 +92,44 @@
   .action-btn > i {
     width: 36px; height: 36px; border-radius: 9px;
     display: grid; place-items: center;
-    background: var(--accent-soft); color: var(--accent); font-size: 15px;
-    flex-shrink: 0;
+    background: var(--accent-soft); color: var(--accent); font-size: 15px; flex-shrink: 0;
   }
   .action-btn > div { min-width: 0; }
   .action-btn strong { display: block; font-weight: 500; font-size: .9rem; line-height: 1.2; }
   .action-btn small { display: block; font-size: .72rem; color: var(--muted); margin-top: 2px; }
   @media (max-width: 480px) { .action-box { grid-template-columns: 1fr; } }
 
-  /* ============ Overview section ============ */
   .overview-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--r-lg); padding: 16px; margin-bottom: 16px;
-    box-shadow: var(--shadow-xs);
+    border-radius: var(--r-lg); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-xs);
   }
-  .overview-head {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
-  }
-  .overview-head h2 {
-    font-size: .95rem; font-weight: 500;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .overview-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .overview-head h2 { font-size: .95rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
   .overview-head h2 i { color: var(--accent); font-size: 13px; }
-  .overview-filters {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
-  }
+  .overview-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
   .overview-filters .input { font-size: .85rem; padding: 9px 12px; }
-  @media (max-width: 480px) {
-    .overview-filters { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 480px) { .overview-filters { grid-template-columns: 1fr; } }
   .overview-session-head {
     display: flex; align-items: center; gap: 10px;
     padding-bottom: 10px; border-bottom: 1px solid var(--border);
     margin-bottom: 12px; flex-wrap: wrap;
   }
   .overview-session-head h3 { font-size: .95rem; font-weight: 500; }
-  .overview-counts {
-    margin-left: auto; font-size: .78rem; color: var(--muted);
-    display: flex; gap: 10px;
-  }
+  .overview-counts { margin-left: auto; font-size: .78rem; color: var(--muted); display: flex; gap: 10px; }
   .overview-counts .present { color: var(--success-text); font-weight: 500; }
   .overview-counts .absent { color: var(--danger-text); font-weight: 500; }
-  .overview-list {
-    display: flex; flex-direction: column; gap: 6px; max-height: 320px;
-    overflow-y: auto; overscroll-behavior: contain;
-  }
+  .overview-list { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; overscroll-behavior: contain; }
   .overview-row {
     display: flex; align-items: center; gap: 10px;
     padding: 8px 10px; background: var(--bg-soft); border-radius: 8px;
     border: 1px solid var(--border); font-size: .84rem;
   }
   .overview-row .avatar { width: 30px; height: 30px; border-radius: 8px; font-size: 11px; }
-  .overview-row strong {
-    font-weight: 500; flex: 1; min-width: 0;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  .overview-row strong { font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .overview-row small { color: var(--muted); font-size: .72rem; flex-shrink: 0; }
-  .overview-empty {
-    text-align: center; padding: 24px 12px; color: var(--muted); font-size: .85rem;
-  }
+  .overview-empty { text-align: center; padding: 24px 12px; color: var(--muted); font-size: .85rem; }
   .overview-empty i { display: block; font-size: 24px; margin-bottom: 8px; opacity: .4; }
 
-  /* ============ Search ============ */
   .search-wrap { position: relative; margin-bottom: 16px; }
   .search-wrap .fa-magnifying-glass {
     position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
@@ -184,7 +163,6 @@
   .student-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); transform: translateY(-1px); }
   .student-card:active { transform: scale(.99); }
   @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
   .avatar {
     width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
     display: grid; place-items: center; color: #fff; font-size: 16px; font-weight: 500;
@@ -193,7 +171,6 @@
   }
   .avatar > span { position: relative; z-index: 0; }
   .avatar > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-
   .card-body { flex: 1; min-width: 0; }
   .card-name {
     font-size: .98rem; font-weight: 500; letter-spacing: -0.005em;
@@ -208,10 +185,7 @@
     font-size: .72rem; padding: 3px 8px; border-radius: 6px;
     background: var(--accent-soft); color: var(--accent-text); font-weight: 400; white-space: nowrap;
   }
-  .card-chevron {
-    color: var(--muted); font-size: 11px; flex-shrink: 0;
-    transition: all .18s; align-self: center;
-  }
+  .card-chevron { color: var(--muted); font-size: 11px; flex-shrink: 0; transition: all .18s; align-self: center; }
   .student-card:hover .card-chevron { color: var(--accent); transform: translateX(2px); }
 
   .empty {
@@ -407,15 +381,12 @@
   .admin-row-body small { font-size: .76rem; color: var(--muted); display: block; margin-top: 1px; }
   .admin-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
-  /* Pending cards */
   .pending-item {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-sm); padding: 12px; margin-bottom: 10px;
     animation: cardIn .25s ease;
   }
-  .pending-head {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  }
+  .pending-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .pending-badge {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: .7rem; padding: 3px 9px; border-radius: 999px;
@@ -425,9 +396,7 @@
   .pending-badge.attendance { background: var(--accent-soft); color: var(--accent-text); }
   .pending-badge i { font-size: 10px; }
   .pending-time { margin-left: auto; font-size: .72rem; color: var(--muted); }
-  .pending-body {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
-  }
+  .pending-body { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
   .pending-thumb {
     width: 44px; height: 44px; border-radius: 10px;
     background: var(--bg-soft); border: 1px solid var(--border);
@@ -447,12 +416,11 @@
   }
   .pending-btn i { font-size: 11px; }
   .pending-btn:disabled { opacity: .55; cursor: not-allowed; }
-  .pending-btn.approve { color: var(--success-text); border-color: var(--border); }
+  .pending-btn.approve { color: var(--success-text); }
   .pending-btn.approve:hover:not(:disabled) { background: var(--success-soft); border-color: var(--success); }
-  .pending-btn.reject { color: var(--danger-text); border-color: var(--border); }
+  .pending-btn.reject { color: var(--danger-text); }
   .pending-btn.reject:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); }
 
-  /* Session list */
   .session-stats {
     display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px;
     font-size: .76rem; color: var(--text-3);
@@ -466,7 +434,6 @@
   .stat-pill.present b { color: var(--success-text); }
   .stat-pill.absent b { color: var(--danger-text); }
   .stat-pill i { font-size: 11px; }
-
   .session-list { display: flex; flex-direction: column; gap: 6px; }
 
   .student-row {
@@ -476,10 +443,10 @@
     animation: cardIn .25s ease backwards;
   }
   .student-row:hover { border-color: var(--border-strong); }
-  .student-row.is-present { background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.35); }
-  .student-row.is-absent { background: rgba(239, 68, 68, 0.06); border-color: rgba(239, 68, 68, 0.35); }
-  [data-theme="dark"] .student-row.is-present { background: rgba(52, 211, 153, 0.09); border-color: rgba(52, 211, 153, 0.3); }
-  [data-theme="dark"] .student-row.is-absent { background: rgba(248, 113, 113, 0.09); border-color: rgba(248, 113, 113, 0.3); }
+  .student-row.is-present { background: rgba(16,185,129,.06); border-color: rgba(16,185,129,.35); }
+  .student-row.is-absent { background: rgba(239,68,68,.06); border-color: rgba(239,68,68,.35); }
+  [data-theme="dark"] .student-row.is-present { background: rgba(52,211,153,.09); border-color: rgba(52,211,153,.3); }
+  [data-theme="dark"] .student-row.is-absent { background: rgba(248,113,113,.09); border-color: rgba(248,113,113,.3); }
   .student-row .avatar { width: 40px; height: 40px; border-radius: 10px; font-size: 13px; }
   .student-row-body { flex: 1; min-width: 0; }
   .student-row-body h4 {
@@ -487,7 +454,6 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .student-row-body small { font-size: .74rem; color: var(--muted); display: block; }
-
   .mark-buttons { display: flex; gap: 6px; flex-shrink: 0; }
   .mark-btn {
     width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border);
@@ -503,7 +469,6 @@
   .mark-btn.absent.active:hover:not(:disabled) { background: #dc2626; }
   .mark-btn.present.active:hover:not(:disabled) { background: #059669; }
 
-  /* Activity */
   .activity { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
   .activity-item {
     display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -519,7 +484,6 @@
   }
   .activity-item .time { font-size: .72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
-  /* Toast */
   .toast {
     position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom));
     transform: translate(-50%, 12px); opacity: 0; visibility: hidden;
@@ -538,7 +502,6 @@
   .toast.error { background: #991b1b; }
   .toast.info { background: #1e40af; }
 
-  /* Modal */
   .modal { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 20px; }
   .modal-backdrop {
     position: absolute; inset: 0; background: rgba(9,9,11,0.55);
@@ -554,7 +517,6 @@
   .modal-dialog p { font-size: .86rem; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
-  /* Full-size form modal (for attendance request / upload info) */
   .form-dialog {
     position: relative; background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-lg); max-width: 460px; width: 100%; max-height: 90vh;
@@ -563,8 +525,7 @@
   }
   .form-header {
     display: flex; align-items: flex-start; gap: 12px;
-    padding: 20px 20px 14px; border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
+    padding: 20px 20px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
   .form-header-icon {
     width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
@@ -584,7 +545,6 @@
   .form-header .close-btn:hover { background: var(--bg-soft); color: var(--text); }
   .form-body { padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
-  /* Student detail */
   .detail-dialog {
     position: relative; background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-lg); max-width: 480px; width: 100%; max-height: 85vh;
@@ -665,7 +625,7 @@
     .student-row .avatar { width: 36px; height: 36px; font-size: 12px; }
     .mark-btn { width: 38px; height: 38px; font-size: 14px; }
     .detail-dialog { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 90vh; border-bottom: none; }
-    #studentDetail.modal, #infoModal.modal { align-items: end; padding: 0; }
+    #studentDetail.modal, #infoModal.modal, #attendanceModal.modal { align-items: end; padding: 0; }
     .form-dialog { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 92vh; border-bottom: none; }
     .detail-hero { padding: 24px 16px 16px; }
     .detail-hero .avatar { width: 68px; height: 68px; border-radius: 18px; font-size: 22px; }
@@ -693,6 +653,8 @@
 </head>
 <body>
 
+<div id="errorBanner" class="error-banner"></div>
+
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -702,25 +664,17 @@
     <button id="themeBtn" class="icon-btn" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
   </header>
 
-  <!-- Action box -->
   <div class="action-box">
     <button class="action-btn" id="btnAttendance">
       <i class="fa-solid fa-calendar-check"></i>
-      <div>
-        <strong>Request Attendance</strong>
-        <small>Mark yourself present</small>
-      </div>
+      <div><strong>Request Attendance</strong><small>Mark yourself present</small></div>
     </button>
     <button class="action-btn" id="btnUploadInfo">
       <i class="fa-solid fa-cloud-arrow-up"></i>
-      <div>
-        <strong>Upload Info</strong>
-        <small>Register / update profile</small>
-      </div>
+      <div><strong>Upload Info</strong><small>Register / update profile</small></div>
     </button>
   </div>
 
-  <!-- Attendance Overview -->
   <section class="overview-card" id="overviewCard">
     <div class="overview-head">
       <h2><i class="fa-solid fa-chart-simple"></i> Attendance Overview</h2>
@@ -730,10 +684,7 @@
       <select id="ovSubject" class="input" aria-label="Filter by subject"></select>
     </div>
     <div id="overviewBody">
-      <div class="overview-empty">
-        <i class="fa-regular fa-calendar"></i>
-        No attendance sessions yet.
-      </div>
+      <div class="overview-empty"><i class="fa-regular fa-calendar"></i> No attendance sessions yet.</div>
     </div>
   </section>
 
@@ -748,7 +699,6 @@
 
 <button id="adminFab" class="fab" aria-label="Open admin panel"><i class="fa-solid fa-user-shield"></i></button>
 
-<!-- Admin panel -->
 <div id="adminPanel" class="panel hidden">
   <div class="panel-backdrop" data-close-panel></div>
   <aside class="panel-dialog" role="dialog" aria-modal="true">
@@ -776,22 +726,15 @@
             <input id="loginPass" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
             <span class="field-error" data-error-for="loginPass"></span>
           </div>
-          <button type="submit" class="btn btn-primary btn-block">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
-          </button>
+          <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</button>
         </form>
       </div>
     </div>
 
     <div id="adminView" class="panel-body hidden">
       <div class="signed-bar">
-        <div class="signed-info">
-          <span class="signed-dot"></span>
-          <span id="signedEmail"></span>
-        </div>
-        <button id="logoutBtn" class="btn btn-ghost btn-sm">
-          <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </button>
+        <div class="signed-info"><span class="signed-dot"></span><span id="signedEmail"></span></div>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
       </div>
 
       <nav class="panel-tabs">
@@ -829,15 +772,11 @@
                     <i class="fa-solid fa-upload"></i> Upload
                     <input type="file" id="photoInput" accept="image/*" hidden />
                   </label>
-                  <button type="button" id="photoClear" class="btn btn-ghost btn-sm">
-                    <i class="fa-solid fa-xmark"></i> Clear
-                  </button>
+                  <button type="button" id="photoClear" class="btn btn-ghost btn-sm"><i class="fa-solid fa-xmark"></i> Clear</button>
                 </div>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">
-              <i class="fa-solid fa-plus"></i> Add Student
-            </button>
+            <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-plus"></i> Add Student</button>
           </form>
         </div>
       </div>
@@ -856,14 +795,12 @@
             <input id="sessDate" class="input" type="date" />
           </div>
         </div>
-
         <div id="sessionPrompt" class="section">
           <p style="text-align:center;color:var(--muted);font-size:.85rem;padding:16px 0;">
             <i class="fa-solid fa-arrow-up" style="display:block;font-size:22px;margin-bottom:10px;opacity:.5;"></i>
             Select a subject and date to start marking.
           </p>
         </div>
-
         <div id="sessionView" class="section hidden">
           <div class="section-head"><h3 id="sessionTitle">Session</h3></div>
           <div id="sessionStats" class="session-stats"></div>
@@ -877,11 +814,10 @@
             <h3>Pending Requests</h3>
             <span id="pendingCount" style="font-size:.76rem;color:var(--muted);"></span>
           </div>
-          <p class="hint">Approve or reject user submissions for info uploads and attendance requests.</p>
+          <p class="hint">Approve or reject user submissions.</p>
           <div id="pendingList">
             <div class="overview-empty" style="padding:32px 12px;">
-              <i class="fa-solid fa-inbox"></i>
-              No pending requests.
+              <i class="fa-solid fa-inbox"></i> No pending requests.
             </div>
           </div>
         </div>
@@ -904,20 +840,15 @@
             <h3>Recent Activity</h3>
             <span style="font-size:.76rem;color:var(--muted);">Last 15</span>
           </div>
-          <p class="hint">Latest attendance marks appear here automatically.</p>
-          <div id="activityList" class="activity">
-            <p class="hint" style="margin:0;">No activity yet.</p>
-          </div>
+          <div id="activityList" class="activity"><p class="hint" style="margin:0;">No activity yet.</p></div>
         </div>
       </div>
     </div>
   </aside>
 </div>
 
-<!-- Hidden file input for updating photos -->
 <input type="file" id="managePhotoInput" accept="image/*" hidden />
 
-<!-- Student detail modal -->
 <div id="studentDetail" class="modal hidden">
   <div class="modal-backdrop" data-close-detail></div>
   <div class="detail-dialog">
@@ -934,23 +865,17 @@
     </div>
     <div class="detail-body">
       <h3><i class="fa-regular fa-calendar-check"></i> Present History</h3>
-      <div id="detailHistory">
-        <div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
-      </div>
+      <div id="detailHistory"><div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div></div>
     </div>
   </div>
 </div>
 
-<!-- Attendance request modal -->
 <div id="attendanceModal" class="modal hidden">
   <div class="modal-backdrop" data-close-attendance></div>
   <div class="form-dialog">
     <div class="form-header">
       <div class="form-header-icon"><i class="fa-solid fa-calendar-check"></i></div>
-      <div>
-        <h2>Request Attendance</h2>
-        <p>Select a session and enter your roll number.</p>
-      </div>
+      <div><h2>Request Attendance</h2><p>Select a session and enter your roll number.</p></div>
       <button class="close-btn" data-close-attendance aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="form-body">
@@ -969,7 +894,7 @@
           <span class="field-error" data-error-for="reqRoll"></span>
         </div>
         <p class="hint" style="font-size:.76rem;margin-bottom:14px;">
-          <i class="fa-solid fa-circle-info"></i> Your request will be sent to the admin for approval.
+          <i class="fa-solid fa-circle-info"></i> Request sent to admin for approval.
         </p>
         <button type="submit" class="btn btn-primary btn-block" id="attendanceSubmitBtn">
           <i class="fa-solid fa-paper-plane"></i> Send Request
@@ -979,16 +904,12 @@
   </div>
 </div>
 
-<!-- Upload info modal -->
 <div id="infoModal" class="modal hidden">
   <div class="modal-backdrop" data-close-info></div>
   <div class="form-dialog">
     <div class="form-header">
       <div class="form-header-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-      <div>
-        <h2>Upload Info</h2>
-        <p>Register your profile or update existing info.</p>
-      </div>
+      <div><h2>Upload Info</h2><p>Register or update your profile.</p></div>
       <button class="close-btn" data-close-info aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="form-body">
@@ -1012,14 +933,12 @@
                 <i class="fa-solid fa-upload"></i> Upload
                 <input type="file" id="infoPhotoInput" accept="image/*" hidden />
               </label>
-              <button type="button" id="infoPhotoClear" class="btn btn-ghost btn-sm">
-                <i class="fa-solid fa-xmark"></i> Clear
-              </button>
+              <button type="button" id="infoPhotoClear" class="btn btn-ghost btn-sm"><i class="fa-solid fa-xmark"></i> Clear</button>
             </div>
           </div>
         </div>
         <p class="hint" style="font-size:.76rem;margin-bottom:14px;">
-          <i class="fa-solid fa-circle-info"></i> If a student with this roll already exists, the admin's approval will update their info.
+          <i class="fa-solid fa-circle-info"></i> If a student with this roll exists, admin approval will update their info.
         </p>
         <button type="submit" class="btn btn-primary btn-block" id="infoSubmitBtn">
           <i class="fa-solid fa-paper-plane"></i> Send Request
@@ -1029,10 +948,8 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i><span></span></div>
 
-<!-- Confirm modal -->
 <div id="confirmModal" class="modal hidden">
   <div class="modal-backdrop" data-close-confirm></div>
   <div class="modal-dialog">
@@ -1048,13 +965,25 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDoc, getDocs, setDoc,
+  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDoc, getDocs,
   query, where, onSnapshot, orderBy, limit, serverTimestamp, runTransaction, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+/* ---------- Global error display (so failures are visible) ---------- */
+function showError(msg) {
+  const el = document.getElementById("errorBanner");
+  if (!el) return;
+  el.textContent = "⚠️ Error: " + msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 8000);
+}
+window.addEventListener("error", (e) => showError(e.message || "Unknown error"));
+window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
+
+/* ---------- Firebase ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAclLFCouG4exFxs0wYsWhlhAqf2y4LmlI",
   authDomain: "present-manage.firebaseapp.com",
@@ -1075,6 +1004,30 @@ const sessionsCol = collection(db, "sessions");
 
 const AUTHORIZED_EMAILS = ["mdriyadboss1234@gmail.com"];
 
+/* ==========================================================
+   ⚠️ ALL STATE VARIABLES — declared at TOP to prevent TDZ
+   (this was the bug — onSnapshot sometimes fires before
+   variables declared lower in the file were initialized)
+   ========================================================== */
+let toastTimer = null;
+let students = [];
+let initialLoaded = false;
+let searchQuery = "";
+let sessions = [];
+let overviewUnsub = null;
+let ovSelectedDate = "";
+let ovSelectedSubject = "";
+let sessionSubject = "";
+let sessionDate = "";
+let sessionRecords = {};
+let sessionUnsub = null;
+let addPhotoData = "";
+let infoPhotoData = "";
+let pendingRequests = [];
+let pendingDeleteId = null;
+let photoUpdateTargetId = null;
+
+/* ---------- Helpers ---------- */
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -1123,9 +1076,9 @@ function sanitizeSubject(s) {
   return String(s || "").replace(/[.\[\]/*~`]/g, "_").trim();
 }
 
-let toastTimer = null;
 function toast(msg, type = "info") {
   const el = $("toast");
+  if (!el) return;
   const icons = { success: "fa-circle-check", error: "fa-circle-exclamation", info: "fa-circle-info" };
   el.classList.remove("show");
   void el.offsetWidth;
@@ -1158,19 +1111,25 @@ function fbError(err) {
   return map[code] || err?.message || "কিছু একটা সমস্যা হয়েছে।";
 }
 
+/* ---------- Theme ---------- */
 const themeBtn = $("themeBtn");
 const themeColorMeta = $("themeColorMeta");
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  localStorage.setItem("ca_theme", theme);
-  themeBtn.innerHTML = theme === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-  themeColorMeta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
+  try { localStorage.setItem("ca_theme", theme); } catch (e) { /* ignore */ }
+  if (themeBtn) themeBtn.innerHTML = theme === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+  if (themeColorMeta) themeColorMeta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
 }
-applyTheme(localStorage.getItem("ca_theme") || "light");
-themeBtn.addEventListener("click", () => {
+try {
+  applyTheme(localStorage.getItem("ca_theme") || "light");
+} catch (e) {
+  applyTheme("light");
+}
+themeBtn?.addEventListener("click", () => {
   applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
 });
 
+/* ---------- Validation helpers ---------- */
 function setFieldError(name, msg) {
   const el = document.querySelector(`[data-error-for="${name}"]`);
   if (el) { el.textContent = msg || ""; el.classList.toggle("show", !!msg); }
@@ -1181,7 +1140,6 @@ function clearErrors(scope) {
   scope.querySelectorAll(".field-error").forEach(e => { e.textContent = ""; e.classList.remove("show"); });
   scope.querySelectorAll(".input.invalid").forEach(e => e.classList.remove("invalid"));
 }
-
 const validateName = (v) => {
   const s = String(v||"").trim();
   if (!s) return "Name is required";
@@ -1229,8 +1187,15 @@ function processImage(file) {
   });
 }
 
+/* ---------- Element refs ---------- */
+const studentsGrid = $("studentsGrid");
+const searchInput = $("searchInput");
+const searchClear = $("searchClear");
+
+/* ---------- Student card rendering ---------- */
 function renderSkeleton() {
-  $("studentsGrid").innerHTML = Array.from({ length: 6 }).map(() => `
+  if (!studentsGrid) return;
+  studentsGrid.innerHTML = Array.from({ length: 6 }).map(() => `
     <div class="student-card skeleton">
       <div class="sk-box sk-avatar"></div>
       <div style="flex:1;">
@@ -1241,14 +1206,6 @@ function renderSkeleton() {
       </div>
     </div>`).join("");
 }
-
-let students = [];
-let initialLoaded = false;
-let searchQuery = "";
-
-const studentsGrid = $("studentsGrid");
-const searchInput = $("searchInput");
-const searchClear = $("searchClear");
 
 function cardHTML(s, i) {
   const subs = (s.subjects && typeof s.subjects === "object") ? s.subjects : {};
@@ -1272,6 +1229,7 @@ function cardHTML(s, i) {
 }
 
 function renderStudents() {
+  if (!studentsGrid) return;
   if (!initialLoaded) { renderSkeleton(); return; }
   const sorted = [...students].sort((a, b) =>
     String(a.roll||"").localeCompare(String(b.roll||""), undefined, { numeric: true }));
@@ -1297,25 +1255,27 @@ function renderStudents() {
   studentsGrid.innerHTML = list.map(cardHTML).join("");
 }
 
-studentsGrid.addEventListener("click", (e) => {
+studentsGrid?.addEventListener("click", (e) => {
   const card = e.target.closest(".student-card");
   if (!card) return;
   const id = card.dataset.student;
   if (id) openStudentDetail(id);
 });
 
-searchInput.addEventListener("input", () => {
+searchInput?.addEventListener("input", () => {
   searchQuery = searchInput.value;
-  searchClear.classList.toggle("hidden", !searchQuery);
+  searchClear?.classList.toggle("hidden", !searchQuery);
   renderStudents();
 });
-searchClear.addEventListener("click", () => {
-  searchInput.value = ""; searchQuery = "";
+searchClear?.addEventListener("click", () => {
+  if (searchInput) searchInput.value = "";
+  searchQuery = "";
   searchClear.classList.add("hidden");
-  searchInput.focus();
+  searchInput?.focus();
   renderStudents();
 });
 
+/* ---------- Students live data ---------- */
 onSnapshot(studentsCol,
   (snap) => {
     students = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -1329,7 +1289,7 @@ onSnapshot(studentsCol,
     console.error(err);
     initialLoaded = true;
     toast("Could not load students: " + fbError(err), "error");
-    studentsGrid.innerHTML = `
+    if (studentsGrid) studentsGrid.innerHTML = `
       <div class="empty">
         <i class="fa-solid fa-triangle-exclamation"></i>
         <h3>Unable to load data</h3>
@@ -1344,14 +1304,11 @@ function renderSubjectOptions() {
     const subs = s.subjects || {};
     Object.keys(subs).forEach(k => { if (Number(subs[k]) > 0) set.add(k); });
   });
-  $("subjectList").innerHTML = [...set].sort().map(k => `<option value="${esc(k)}"></option>`).join("");
+  const el = $("subjectList");
+  if (el) el.innerHTML = [...set].sort().map(k => `<option value="${esc(k)}"></option>`).join("");
 }
 
-/* ==========================================================
-   SESSIONS — used by public dropdowns & admin present
-   ========================================================== */
-let sessions = []; // { id, date, subject, updatedAt }
-
+/* ---------- Sessions ---------- */
 onSnapshot(
   query(sessionsCol, orderBy("date", "desc"), limit(200)),
   (snap) => {
@@ -1365,32 +1322,22 @@ onSnapshot(
   }
 );
 
-/* ==========================================================
-   ATTENDANCE OVERVIEW (public section above search)
-   ========================================================== */
-let overviewUnsub = null;
-let ovSelectedDate = "";
-let ovSelectedSubject = "";
-
+/* ---------- Overview ---------- */
 function renderOverviewFilters() {
   const dateSel = $("ovDate");
   const subSel = $("ovSubject");
-
+  if (!dateSel || !subSel) return;
   const uniqueDates = [...new Set(sessions.map(s => s.date))].filter(Boolean).sort((a, b) => b.localeCompare(a));
 
   if (!uniqueDates.length) {
     dateSel.innerHTML = `<option value="">No sessions yet</option>`;
     subSel.innerHTML = `<option value="">—</option>`;
-    $("overviewBody").innerHTML = `
-      <div class="overview-empty">
-        <i class="fa-regular fa-calendar"></i>
-        No attendance sessions yet.
-      </div>`;
+    const ob = $("overviewBody");
+    if (ob) ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i> No attendance sessions yet.</div>`;
     if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
     return;
   }
 
-  // Preserve current selection if still valid
   if (!dateSel.value || !uniqueDates.includes(dateSel.value)) {
     dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
     ovSelectedDate = uniqueDates[0];
@@ -1399,22 +1346,19 @@ function renderOverviewFilters() {
     dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
     dateSel.value = ovSelectedDate;
   }
-
   renderOverviewSubjects();
 }
 
 function renderOverviewSubjects() {
-  const date = $("ovDate").value;
+  const date = $("ovDate")?.value;
   const subSel = $("ovSubject");
+  if (!subSel) return;
   const subjectsForDate = [...new Set(sessions.filter(s => s.date === date).map(s => s.subject))].sort();
 
   if (!subjectsForDate.length) {
     subSel.innerHTML = `<option value="">—</option>`;
-    $("overviewBody").innerHTML = `
-      <div class="overview-empty">
-        <i class="fa-regular fa-calendar-xmark"></i>
-        No sessions on this date.
-      </div>`;
+    const ob = $("overviewBody");
+    if (ob) ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar-xmark"></i> No sessions on this date.</div>`;
     if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
     return;
   }
@@ -1431,13 +1375,15 @@ function renderOverviewSubjects() {
 
 function updateOverview() {
   if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
-  const date = $("ovDate").value;
-  const subject = $("ovSubject").value;
+  const date = $("ovDate")?.value;
+  const subject = $("ovSubject")?.value;
+  const ob = $("overviewBody");
+  if (!ob) return;
   if (!date || !subject) {
-    $("overviewBody").innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i>Select a date and subject.</div>`;
+    ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i> Select a date and subject.</div>`;
     return;
   }
-  $("overviewBody").innerHTML = `<div class="overview-empty"><i class="fa-solid fa-spinner fa-spin"></i>Loading...</div>`;
+  ob.innerHTML = `<div class="overview-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
 
   overviewUnsub = onSnapshot(
     query(recordsCol, where("date", "==", date), where("subject", "==", subject)),
@@ -1445,36 +1391,25 @@ function updateOverview() {
       const allRecords = snap.docs.map(d => d.data());
       const presents = allRecords.filter(r => r.status === "present");
       const absents = allRecords.filter(r => r.status === "absent");
-      const totalStudents = students.length;
 
       if (!allRecords.length) {
-        $("overviewBody").innerHTML = `
-          <div class="overview-empty">
-            <i class="fa-regular fa-calendar"></i>
-            No attendance marked yet for this session.
-          </div>`;
+        ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i> No attendance marked yet for this session.</div>`;
         return;
       }
-
       if (!presents.length) {
-        $("overviewBody").innerHTML = `
+        ob.innerHTML = `
           <div class="overview-session-head">
-            <h3>${esc(subject)}</h3>
-            <span class="overview-counts">
-              <span class="absent">0 present</span>
-            </span>
+            <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
+            <span class="overview-counts"><span class="absent">0 present</span></span>
           </div>
-          <div class="overview-empty">
-            <i class="fa-solid fa-user-xmark"></i>
-            No students marked present.
-          </div>`;
+          <div class="overview-empty"><i class="fa-solid fa-user-xmark"></i> No students marked present.</div>`;
         return;
       }
 
       const sorted = [...presents].sort((a, b) =>
         String(a.studentRoll||"").localeCompare(String(b.studentRoll||""), undefined, { numeric: true }));
 
-      $("overviewBody").innerHTML = `
+      ob.innerHTML = `
         <div class="overview-session-head">
           <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
           <span class="overview-counts">
@@ -1488,37 +1423,31 @@ function updateOverview() {
               ${avatarHTML(r.studentName || "?", "")}
               <strong>${esc(r.studentName || "?")}</strong>
               <small>Roll ${esc(r.studentRoll || "-")}</small>
-            </div>
-          `).join("")}
+            </div>`).join("")}
         </div>`;
     },
     (err) => {
       console.error(err);
-      $("overviewBody").innerHTML = `
-        <div class="overview-empty">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          ${esc(fbError(err))}
-        </div>`;
+      ob.innerHTML = `<div class="overview-empty"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(fbError(err))}</div>`;
     }
   );
 }
 
-$("ovDate").addEventListener("change", () => {
+$("ovDate")?.addEventListener("change", () => {
   ovSelectedDate = $("ovDate").value;
   renderOverviewSubjects();
   updateOverview();
 });
-$("ovSubject").addEventListener("change", () => {
+$("ovSubject")?.addEventListener("change", () => {
   ovSelectedSubject = $("ovSubject").value;
   updateOverview();
 });
 
-/* ==========================================================
-   PUBLIC: Attendance request modal
-   ========================================================== */
+/* ---------- Request dropdowns ---------- */
 function renderRequestDropdowns() {
   const dateSel = $("reqDate");
   const subSel = $("reqSubject");
+  if (!dateSel || !subSel) return;
   const uniqueDates = [...new Set(sessions.map(s => s.date))].filter(Boolean).sort((a, b) => b.localeCompare(a));
 
   if (!uniqueDates.length) {
@@ -1526,7 +1455,6 @@ function renderRequestDropdowns() {
     subSel.innerHTML = `<option value="">—</option>`;
     return;
   }
-
   const prevDate = dateSel.value;
   dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
   dateSel.value = uniqueDates.includes(prevDate) ? prevDate : uniqueDates[0];
@@ -1540,89 +1468,35 @@ function renderRequestDropdowns() {
   subSel.value = subjectsForDate.includes(prevSub) ? prevSub : (subjectsForDate[0] || "");
 }
 
-$("reqDate").addEventListener("change", renderRequestDropdowns);
+$("reqDate")?.addEventListener("change", renderRequestDropdowns);
 
-$("btnAttendance").addEventListener("click", () => {
-  $("attendanceModal").classList.remove("hidden");
+/* ---------- Public modal open/close ---------- */
+$("btnAttendance")?.addEventListener("click", () => {
+  $("attendanceModal")?.classList.remove("hidden");
   document.body.classList.add("lock");
   renderRequestDropdowns();
 });
-$("btnUploadInfo").addEventListener("click", () => {
-  $("infoModal").classList.remove("hidden");
+$("btnUploadInfo")?.addEventListener("click", () => {
+  $("infoModal")?.classList.remove("hidden");
   document.body.classList.add("lock");
 });
 document.querySelectorAll("[data-close-attendance]").forEach(el =>
   el.addEventListener("click", () => {
-    $("attendanceModal").classList.add("hidden");
+    $("attendanceModal")?.classList.add("hidden");
     document.body.classList.remove("lock");
   }));
 document.querySelectorAll("[data-close-info]").forEach(el =>
   el.addEventListener("click", () => {
-    $("infoModal").classList.add("hidden");
+    $("infoModal")?.classList.add("hidden");
     document.body.classList.remove("lock");
   }));
 
-/* Attendance request form */
-$("attendanceReqForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  clearErrors(form);
-
-  const date = $("reqDate").value;
-  const subject = $("reqSubject").value;
-  const roll = $("reqRoll").value.trim();
-
-  if (!date) { toast("Please select a date", "error"); return; }
-  if (!subject) { toast("Please select a subject", "error"); return; }
-  const rollErr = validateRoll(roll);
-  if (rollErr) { setFieldError("reqRoll", rollErr); return; }
-
-  // Verify roll exists
-  try {
-    const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
-    if (snap.empty) {
-      setFieldError("reqRoll", `No student with roll "${roll}". Upload your info first.`);
-      return;
-    }
-  } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
-    return;
-  }
-
-  const btn = $("attendanceSubmitBtn");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Sending...';
-
-  try {
-    await addDoc(pendingCol, {
-      type: "attendance",
-      roll,
-      date,
-      subject: sanitizeSubject(subject),
-      originalSubject: subject,
-      submittedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
-    });
-    form.reset();
-    $("attendanceModal").classList.add("hidden");
-    document.body.classList.remove("lock");
-    toast("Request sent! Admin will review it shortly.", "success");
-  } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request';
-  }
-});
-
-/* Info upload form */
-let infoPhotoData = "";
+/* ---------- Info photo ---------- */
 const infoPhotoInput = $("infoPhotoInput");
 const infoPhotoPreview = $("infoPhotoPreview");
 
 function updateInfoPhotoPreview() {
+  if (!infoPhotoPreview) return;
   if (infoPhotoData) {
     infoPhotoPreview.style.backgroundImage = `url(${infoPhotoData})`;
     infoPhotoPreview.classList.add("has-image");
@@ -1633,7 +1507,7 @@ function updateInfoPhotoPreview() {
     infoPhotoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
   }
 }
-infoPhotoInput.addEventListener("change", async (e) => {
+infoPhotoInput?.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   try {
@@ -1644,17 +1518,64 @@ infoPhotoInput.addEventListener("change", async (e) => {
     e.target.value = "";
   }
 });
-$("infoPhotoClear").addEventListener("click", () => {
-  infoPhotoData = ""; infoPhotoInput.value = ""; updateInfoPhotoPreview();
+$("infoPhotoClear")?.addEventListener("click", () => {
+  infoPhotoData = ""; if (infoPhotoInput) infoPhotoInput.value = ""; updateInfoPhotoPreview();
 });
 
-$("infoForm").addEventListener("submit", async (e) => {
+/* ---------- Public forms ---------- */
+$("attendanceReqForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
 
-  const name = $("infoName").value.trim();
-  const roll = $("infoRoll").value.trim();
+  const date = $("reqDate")?.value;
+  const subject = $("reqSubject")?.value;
+  const roll = $("reqRoll")?.value.trim();
+
+  if (!date) { toast("Please select a date", "error"); return; }
+  if (!subject) { toast("Please select a subject", "error"); return; }
+  const rollErr = validateRoll(roll);
+  if (rollErr) { setFieldError("reqRoll", rollErr); return; }
+
+  try {
+    const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    if (snap.empty) {
+      setFieldError("reqRoll", `No student with roll "${roll}". Upload your info first.`);
+      return;
+    }
+  } catch (err) {
+    console.error(err); toast(fbError(err), "error"); return;
+  }
+
+  const btn = $("attendanceSubmitBtn");
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending...'; }
+
+  try {
+    await addDoc(pendingCol, {
+      type: "attendance", roll, date,
+      subject: sanitizeSubject(subject),
+      originalSubject: subject,
+      submittedAt: serverTimestamp(),
+      createdAt: serverTimestamp()
+    });
+    form.reset();
+    $("attendanceModal")?.classList.add("hidden");
+    document.body.classList.remove("lock");
+    toast("Request sent! Admin will review it shortly.", "success");
+  } catch (err) {
+    console.error(err); toast(fbError(err), "error");
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request'; }
+  }
+});
+
+$("infoForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  clearErrors(form);
+
+  const name = $("infoName")?.value.trim();
+  const roll = $("infoRoll")?.value.trim();
 
   const nameErr = validateName(name);
   const rollErr = validateRoll(roll);
@@ -1663,38 +1584,28 @@ $("infoForm").addEventListener("submit", async (e) => {
   if (nameErr || rollErr) return;
 
   const btn = $("infoSubmitBtn");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Sending...';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending...'; }
 
   try {
     await addDoc(pendingCol, {
-      type: "info",
-      name,
-      roll,
+      type: "info", name, roll,
       photo: infoPhotoData || "",
       submittedAt: serverTimestamp(),
       createdAt: serverTimestamp()
     });
     form.reset();
-    infoPhotoData = ""; infoPhotoInput.value = ""; updateInfoPhotoPreview();
-    $("infoModal").classList.add("hidden");
+    infoPhotoData = ""; if (infoPhotoInput) infoPhotoInput.value = ""; updateInfoPhotoPreview();
+    $("infoModal")?.classList.add("hidden");
     document.body.classList.remove("lock");
     toast("Info sent! Admin will review it shortly.", "success");
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request';
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request'; }
   }
 });
 
-/* ==========================================================
-   ADMIN: Pending requests
-   ========================================================== */
-let pendingRequests = [];
-let pendingUnsub = null;
-
+/* ---------- Pending (admin) ---------- */
 onSnapshot(
   query(pendingCol, orderBy("createdAt", "desc"), limit(50)),
   (snap) => {
@@ -1702,13 +1613,12 @@ onSnapshot(
     renderPendingList();
     updatePendingBadge();
   },
-  (err) => {
-    console.error("Pending snapshot:", err);
-  }
+  (err) => console.error("Pending snapshot:", err)
 );
 
 function updatePendingBadge() {
   const badge = $("pendingBadge");
+  if (!badge) return;
   const count = pendingRequests.length;
   if (count > 0) {
     badge.textContent = count > 99 ? "99+" : count;
@@ -1723,16 +1633,11 @@ function renderPendingList() {
   const countEl = $("pendingCount");
   if (!el) return;
 
-  countEl.textContent = pendingRequests.length
-    ? `${pendingRequests.length} request${pendingRequests.length > 1 ? "s" : ""}`
-    : "";
+  if (countEl) countEl.textContent = pendingRequests.length
+    ? `${pendingRequests.length} request${pendingRequests.length > 1 ? "s" : ""}` : "";
 
   if (!pendingRequests.length) {
-    el.innerHTML = `
-      <div class="overview-empty" style="padding:32px 12px;">
-        <i class="fa-solid fa-inbox"></i>
-        No pending requests.
-      </div>`;
+    el.innerHTML = `<div class="overview-empty" style="padding:32px 12px;"><i class="fa-solid fa-inbox"></i> No pending requests.</div>`;
     return;
   }
 
@@ -1749,37 +1654,24 @@ function renderPendingList() {
       const thumbInner = r.photo
         ? `<img src="${esc(r.photo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.remove()">`
         : `<i class="fa-solid fa-user"></i>`;
-      bodyHTML = `
-        <div class="pending-thumb">${thumbInner}</div>
-        <div class="grow">
-          <strong>${esc(r.name || "(no name)")}</strong>
-          <small>Roll ${esc(r.roll || "-")}</small>
-        </div>`;
+      bodyHTML = `<div class="pending-thumb">${thumbInner}</div>
+        <div class="grow"><strong>${esc(r.name || "(no name)")}</strong><small>Roll ${esc(r.roll || "-")}</small></div>`;
     } else {
-      bodyHTML = `
-        <div class="pending-thumb"><i class="fa-solid fa-user-check"></i></div>
-        <div class="grow">
-          <strong>Roll ${esc(r.roll || "-")}</strong>
-          <small>${esc(r.originalSubject || r.subject || "-")} · ${esc(formatDate(r.date || ""))}</small>
-        </div>`;
+      bodyHTML = `<div class="pending-thumb"><i class="fa-solid fa-user-check"></i></div>
+        <div class="grow"><strong>Roll ${esc(r.roll || "-")}</strong>
+        <small>${esc(r.originalSubject || r.subject || "-")} · ${esc(formatDate(r.date || ""))}</small></div>`;
     }
 
     return `
       <div class="pending-item" data-id="${esc(r.id)}">
         <div class="pending-head">
-          <span class="pending-badge ${badgeClass}">
-            <i class="fa-solid ${badgeIcon}"></i> ${badgeLabel}
-          </span>
+          <span class="pending-badge ${badgeClass}"><i class="fa-solid ${badgeIcon}"></i> ${badgeLabel}</span>
           <span class="pending-time">${esc(timeStr)}</span>
         </div>
         <div class="pending-body">${bodyHTML}</div>
         <div class="pending-actions">
-          <button class="pending-btn reject" data-reject="${esc(r.id)}">
-            <i class="fa-solid fa-xmark"></i> Reject
-          </button>
-          <button class="pending-btn approve" data-approve="${esc(r.id)}">
-            <i class="fa-solid fa-check"></i> Approve
-          </button>
+          <button class="pending-btn reject" data-reject="${esc(r.id)}"><i class="fa-solid fa-xmark"></i> Reject</button>
+          <button class="pending-btn approve" data-approve="${esc(r.id)}"><i class="fa-solid fa-check"></i> Approve</button>
         </div>
       </div>`;
   }).join("");
@@ -1801,8 +1693,7 @@ async function rejectRequest(requestId, btn) {
     await deleteDoc(doc(pendingCol, requestId));
     toast("Request rejected", "info");
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
     buttons.forEach(b => b.disabled = false);
   }
 }
@@ -1811,7 +1702,6 @@ async function approveRequest(requestId, btn) {
   if (btn.disabled) return;
   const req = pendingRequests.find(p => p.id === requestId);
   if (!req) return;
-
   const item = btn.closest(".pending-item");
   const buttons = item.querySelectorAll(".pending-btn");
   buttons.forEach(b => b.disabled = true);
@@ -1820,25 +1710,14 @@ async function approveRequest(requestId, btn) {
 
   try {
     let result;
-    if (req.type === "info") {
-      result = await approveInfoRequest(req);
-    } else if (req.type === "attendance") {
-      result = await approveAttendanceRequest(req);
-    } else {
-      throw new Error("Unknown request type");
-    }
+    if (req.type === "info") result = await approveInfoRequest(req);
+    else if (req.type === "attendance") result = await approveAttendanceRequest(req);
+    else throw new Error("Unknown request type");
 
-    // Delete the pending request
     await deleteDoc(doc(pendingCol, requestId));
-
-    if (result?.message) {
-      toast(result.message, "success");
-    } else {
-      toast("Request approved", "success");
-    }
+    toast(result?.message || "Request approved", "success");
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
     buttons.forEach(b => b.disabled = false);
     btn.innerHTML = oldHTML;
   }
@@ -1851,23 +1730,12 @@ async function approveInfoRequest(req) {
 
   const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
   if (!snap.empty) {
-    // Update existing student
-    const docRef = snap.docs[0].ref;
-    await updateDoc(docRef, {
-      name,
-      photo: req.photo || "",
-      updatedAt: serverTimestamp()
-    });
+    await updateDoc(snap.docs[0].ref, { name, photo: req.photo || "", updatedAt: serverTimestamp() });
     return { message: `Updated info for ${name} (Roll ${roll})` };
   } else {
-    // Create new student
     await addDoc(studentsCol, {
-      name,
-      roll,
-      photo: req.photo || "",
-      subjects: {},
-      totalPresent: 0,
-      createdAt: serverTimestamp()
+      name, roll, photo: req.photo || "",
+      subjects: {}, totalPresent: 0, createdAt: serverTimestamp()
     });
     return { message: `${name} added (Roll ${roll})` };
   }
@@ -1885,23 +1753,17 @@ async function approveAttendanceRequest(req) {
   const studentDoc = snap.docs[0];
   const studentId = studentDoc.id;
   const studentName = studentDoc.data().name || roll;
-
-  // Check if already present
   const sanitizedSubject = sanitizeSubject(subject);
   const recordId = `${date}__${sanitizedSubject}__${studentId}`;
   const recordSnap = await getDoc(doc(recordsCol, recordId));
   if (recordSnap.exists() && recordSnap.data().status === "present") {
     return { message: `${studentName} already marked present in ${subject}` };
   }
-
   await applyAttendanceMark(studentId, subject, date, "present");
   return { message: `${studentName} marked present in ${subject}` };
 }
 
-/* ==========================================================
-   Shared attendance mark logic (used by admin present + pending approve)
-   Log ID == record ID → toggle-off automatically removes activity entry
-   ========================================================== */
+/* ---------- Shared attendance mark logic ---------- */
 async function applyAttendanceMark(studentId, subject, date, newStatus) {
   const sanitized = sanitizeSubject(subject);
   const recordId = `${date}__${sanitized}__${studentId}`;
@@ -1929,41 +1791,26 @@ async function applyAttendanceMark(studentId, subject, date, newStatus) {
     let newSubj = currentSubj;
 
     if (prevStatus === newStatus) {
-      // Toggle off → delete record + log
       tx.delete(recordRef);
       tx.delete(logRef);
       finalStatus = null;
     } else {
       tx.set(recordRef, {
-        studentId,
-        studentName: sdata.name || "",
-        studentRoll: sdata.roll || "",
-        date,
-        subject: sanitized,
-        status: newStatus,
-        markedAt: Date.now(),
-        markedBy: auth.currentUser?.email || ""
+        studentId, studentName: sdata.name || "", studentRoll: sdata.roll || "",
+        date, subject: sanitized, status: newStatus,
+        markedAt: Date.now(), markedBy: auth.currentUser?.email || ""
       });
       if (newStatus === "present") {
-        // Log with deterministic ID
         tx.set(logRef, {
-          studentId,
-          name: sdata.name || "",
-          roll: sdata.roll || "",
-          subject: sanitized,
-          sessionDate: date,
+          studentId, name: sdata.name || "", roll: sdata.roll || "",
+          subject: sanitized, sessionDate: date,
           markedBy: auth.currentUser?.email || "",
           createdAt: serverTimestamp()
         });
       } else {
         tx.delete(logRef);
       }
-      // Ensure session index entry exists
-      tx.set(sessionRef, {
-        date,
-        subject: sanitized,
-        updatedAt: serverTimestamp()
-      }, { merge: true });
+      tx.set(sessionRef, { date, subject: sanitized, updatedAt: serverTimestamp() }, { merge: true });
     }
 
     isPresent = finalStatus === "present";
@@ -1986,22 +1833,27 @@ async function applyAttendanceMark(studentId, subject, date, newStatus) {
   return { wasPresent, isPresent };
 }
 
-/* ==========================================================
-   ADMIN PANEL — panel open/close, tabs, auth
-   ========================================================== */
+/* ---------- Admin panel ---------- */
 const adminPanel = $("adminPanel");
 const adminFab = $("adminFab");
-function openPanel() { adminPanel.classList.remove("hidden"); document.body.classList.add("lock"); }
-function closePanel() { adminPanel.classList.add("hidden"); document.body.classList.remove("lock"); }
-adminFab.addEventListener("click", openPanel);
-$("panelClose").addEventListener("click", closePanel);
+
+function openPanel() {
+  adminPanel?.classList.remove("hidden");
+  document.body.classList.add("lock");
+}
+function closePanel() {
+  adminPanel?.classList.add("hidden");
+  document.body.classList.remove("lock");
+}
+adminFab?.addEventListener("click", openPanel);
+$("panelClose")?.addEventListener("click", closePanel);
 document.querySelectorAll("[data-close-panel]").forEach(el => el.addEventListener("click", closePanel));
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  if (!$("attendanceModal").classList.contains("hidden")) { $("attendanceModal").classList.add("hidden"); document.body.classList.remove("lock"); }
-  else if (!$("infoModal").classList.contains("hidden")) { $("infoModal").classList.add("hidden"); document.body.classList.remove("lock"); }
-  else if (!$("studentDetail").classList.contains("hidden")) closeDetail();
-  else if (!adminPanel.classList.contains("hidden")) closePanel();
+  if (!$("attendanceModal")?.classList.contains("hidden")) { $("attendanceModal")?.classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if (!$("infoModal")?.classList.contains("hidden")) { $("infoModal")?.classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if (!$("studentDetail")?.classList.contains("hidden")) closeDetail();
+  else if (!adminPanel?.classList.contains("hidden")) closePanel();
 });
 
 document.querySelectorAll(".panel-tab").forEach(tab => {
@@ -2009,32 +1861,35 @@ document.querySelectorAll(".panel-tab").forEach(tab => {
     document.querySelectorAll(".panel-tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".ptab-view").forEach(v => v.classList.add("hidden"));
     tab.classList.add("active");
-    $(`ptab-${tab.dataset.ptab}`).classList.remove("hidden");
+    const target = $(`ptab-${tab.dataset.ptab}`);
+    if (target) target.classList.remove("hidden");
   });
 });
 
-/* ==========================================================
-   STUDENT DETAIL
-   ========================================================== */
+/* ---------- Student detail ---------- */
 async function openStudentDetail(studentId) {
   const student = students.find(s => s.id === studentId);
   if (!student) return toast("Student not found", "error");
 
-  $("detailAvatarWrap").innerHTML = avatarHTML(student.name, student.photo);
-  const av = $("detailAvatarWrap").querySelector(".avatar");
-  if (av) {
-    av.style.width = "76px"; av.style.height = "76px";
-    av.style.borderRadius = "20px"; av.style.fontSize = "24px";
-    av.style.margin = "0 auto 14px"; av.style.boxShadow = "var(--shadow-md)";
+  const wrap = $("detailAvatarWrap");
+  if (wrap) {
+    wrap.innerHTML = avatarHTML(student.name, student.photo);
+    const av = wrap.querySelector(".avatar");
+    if (av) {
+      av.style.width = "76px"; av.style.height = "76px";
+      av.style.borderRadius = "20px"; av.style.fontSize = "24px";
+      av.style.margin = "0 auto 14px"; av.style.boxShadow = "var(--shadow-md)";
+    }
   }
-  $("detailName").textContent = student.name;
-  $("detailRoll").textContent = `Roll ${student.roll}`;
-  $("detailTotal").textContent = Number(student.totalPresent) || 0;
-  $("detailDays").textContent = "—";
-  $("detailSubjects").textContent = "—";
-  $("detailHistory").innerHTML = `<div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
+  $("detailName") && ($("detailName").textContent = student.name);
+  $("detailRoll") && ($("detailRoll").textContent = `Roll ${student.roll}`);
+  $("detailTotal") && ($("detailTotal").textContent = Number(student.totalPresent) || 0);
+  $("detailDays") && ($("detailDays").textContent = "—");
+  $("detailSubjects") && ($("detailSubjects").textContent = "—");
+  const hist = $("detailHistory");
+  if (hist) hist.innerHTML = `<div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
 
-  $("studentDetail").classList.remove("hidden");
+  $("studentDetail")?.classList.remove("hidden");
   document.body.classList.add("lock");
 
   try {
@@ -2042,14 +1897,9 @@ async function openStudentDetail(studentId) {
     const presents = snap.docs.map(d => d.data()).filter(r => r.status === "present");
 
     if (!presents.length) {
-      $("detailDays").textContent = "0";
-      $("detailSubjects").textContent = "0";
-      $("detailHistory").innerHTML = `
-        <div class="detail-empty">
-          <i class="fa-regular fa-calendar"></i>
-          No present records yet.<br>
-          <span style="font-size:.78rem;">Attendance will appear here once marked.</span>
-        </div>`;
+      $("detailDays") && ($("detailDays").textContent = "0");
+      $("detailSubjects") && ($("detailSubjects").textContent = "0");
+      if (hist) hist.innerHTML = `<div class="detail-empty"><i class="fa-regular fa-calendar"></i> No present records yet.<br><span style="font-size:.78rem;">Attendance will appear here once marked.</span></div>`;
       return;
     }
 
@@ -2061,11 +1911,11 @@ async function openStudentDetail(studentId) {
       subjectSet.add(r.subject);
     });
 
-    $("detailDays").textContent = Object.keys(byDate).length;
-    $("detailSubjects").textContent = subjectSet.size;
+    $("detailDays") && ($("detailDays").textContent = Object.keys(byDate).length);
+    $("detailSubjects") && ($("detailSubjects").textContent = subjectSet.size);
 
     const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
-    $("detailHistory").innerHTML = sortedDates.map(date => {
+    if (hist) hist.innerHTML = sortedDates.map(date => {
       const subs = [...new Set(byDate[date])].sort();
       return `
         <div class="detail-date-group">
@@ -2079,24 +1929,16 @@ async function openStudentDetail(studentId) {
     }).join("");
   } catch (err) {
     console.error(err);
-    $("detailHistory").innerHTML = `
-      <div class="detail-empty">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        Could not load history.<br>
-        <span style="font-size:.76rem;color:var(--danger-text);">${esc(fbError(err))}</span>
-      </div>`;
+    if (hist) hist.innerHTML = `<div class="detail-empty"><i class="fa-solid fa-triangle-exclamation"></i> Could not load history.<br><span style="font-size:.76rem;color:var(--danger-text);">${esc(fbError(err))}</span></div>`;
   }
 }
 function closeDetail() {
-  $("studentDetail").classList.add("hidden");
+  $("studentDetail")?.classList.add("hidden");
   document.body.classList.remove("lock");
 }
-$("studentDetail").querySelectorAll("[data-close-detail]").forEach(el =>
-  el.addEventListener("click", closeDetail));
+document.querySelectorAll("[data-close-detail]").forEach(el => el.addEventListener("click", closeDetail));
 
-/* ==========================================================
-   AUTH
-   ========================================================== */
+/* ---------- Auth ---------- */
 const loginView = $("loginView");
 const adminView = $("adminView");
 const panelTitle = $("panelTitle");
@@ -2110,17 +1952,17 @@ const isAuthorized = (user) => {
 };
 
 function showLoginView() {
-  loginView.classList.remove("hidden");
-  adminView.classList.add("hidden");
-  panelTitle.textContent = "Admin Panel";
-  panelSubtitle.textContent = "Sign in to manage attendance";
+  loginView?.classList.remove("hidden");
+  adminView?.classList.add("hidden");
+  if (panelTitle) panelTitle.textContent = "Admin Panel";
+  if (panelSubtitle) panelSubtitle.textContent = "Sign in to manage attendance";
 }
 function showAdminView(user) {
-  loginView.classList.add("hidden");
-  adminView.classList.remove("hidden");
-  panelTitle.textContent = "Admin Panel";
-  panelSubtitle.textContent = "Manage students & attendance";
-  signedEmail.textContent = user.email || "";
+  loginView?.classList.add("hidden");
+  adminView?.classList.remove("hidden");
+  if (panelTitle) panelTitle.textContent = "Admin Panel";
+  if (panelSubtitle) panelSubtitle.textContent = "Manage students & attendance";
+  if (signedEmail) signedEmail.textContent = user.email || "";
   renderAdminList();
 }
 
@@ -2136,20 +1978,19 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-$("loginForm").addEventListener("submit", async (e) => {
+$("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
-  const email = $("loginEmail").value.trim();
-  const pass = $("loginPass").value;
+  const email = $("loginEmail")?.value.trim();
+  const pass = $("loginPass")?.value;
   const emailErr = validateEmail(email);
   if (emailErr) setFieldError("loginEmail", emailErr);
   if (!pass) setFieldError("loginPass", "Password is required");
   if (emailErr || !pass) return;
 
   const btn = form.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Signing in...';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Signing in...'; }
   try {
     const cred = await signInWithEmailAndPassword(auth, email, pass);
     if (!isAuthorized(cred.user)) {
@@ -2159,27 +2000,23 @@ $("loginForm").addEventListener("submit", async (e) => {
     form.reset();
     toast("Welcome back!", "success");
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In';
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In'; }
   }
 });
 
-$("logoutBtn").addEventListener("click", async () => {
+$("logoutBtn")?.addEventListener("click", async () => {
   try { await signOut(auth); toast("Logged out", "info"); }
   catch (err) { toast(fbError(err), "error"); }
 });
 
-/* ==========================================================
-   ADMIN — Add student with photo
-   ========================================================== */
-let addPhotoData = "";
+/* ---------- Admin add student ---------- */
 const photoInput = $("photoInput");
 const photoPreview = $("photoPreview");
 
 function updatePhotoPreview() {
+  if (!photoPreview) return;
   if (addPhotoData) {
     photoPreview.style.backgroundImage = `url(${addPhotoData})`;
     photoPreview.classList.add("has-image");
@@ -2190,7 +2027,7 @@ function updatePhotoPreview() {
     photoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
   }
 }
-photoInput.addEventListener("change", async (e) => {
+photoInput?.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   try {
@@ -2201,24 +2038,24 @@ photoInput.addEventListener("change", async (e) => {
     e.target.value = "";
   }
 });
-$("photoClear").addEventListener("click", () => {
-  addPhotoData = ""; photoInput.value = ""; updatePhotoPreview();
+$("photoClear")?.addEventListener("click", () => {
+  addPhotoData = ""; if (photoInput) photoInput.value = ""; updatePhotoPreview();
 });
 
-$("addStudentForm").addEventListener("submit", async (e) => {
+$("addStudentForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
-  const nameEl = $("addName"), rollEl = $("addRoll");
-  const name = nameEl.value.trim(), roll = rollEl.value.trim();
-  const nameErr = validateName(name), rollErr = validateRoll(roll);
+  const name = $("addName")?.value.trim();
+  const roll = $("addRoll")?.value.trim();
+  const nameErr = validateName(name);
+  const rollErr = validateRoll(roll);
   if (nameErr) setFieldError("addName", nameErr);
   if (rollErr) setFieldError("addRoll", rollErr);
   if (nameErr || rollErr) return;
 
   const btn = form.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Adding...';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Adding...'; }
   try {
     const dup = await getDocs(query(studentsCol, where("roll", "==", roll)));
     if (!dup.empty) {
@@ -2227,37 +2064,25 @@ $("addStudentForm").addEventListener("submit", async (e) => {
       return;
     }
     await addDoc(studentsCol, {
-      name, roll,
-      photo: addPhotoData || "",
-      subjects: {},
-      totalPresent: 0,
-      createdAt: serverTimestamp()
+      name, roll, photo: addPhotoData || "",
+      subjects: {}, totalPresent: 0, createdAt: serverTimestamp()
     });
     form.reset();
-    addPhotoData = ""; photoInput.value = ""; updatePhotoPreview();
-    nameEl.focus();
+    addPhotoData = ""; if (photoInput) photoInput.value = ""; updatePhotoPreview();
+    $("addName")?.focus();
     toast(`${name} added successfully`, "success");
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Student';
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Student'; }
   }
 });
 
-/* ==========================================================
-   ADMIN — Present session
-   ========================================================== */
-let sessionSubject = "";
-let sessionDate = "";
-let sessionRecords = {};
-let sessionUnsub = null;
-
+/* ---------- Admin present session ---------- */
 function watchSession() {
   if (sessionUnsub) { sessionUnsub(); sessionUnsub = null; }
-  const subject = $("sessSubject").value.trim();
-  const date = $("sessDate").value;
+  const subject = $("sessSubject")?.value.trim() || "";
+  const date = $("sessDate")?.value || "";
   sessionSubject = subject;
   sessionDate = date;
   sessionRecords = {};
@@ -2281,44 +2106,49 @@ function watchSession() {
     }
   );
 }
-$("sessSubject").addEventListener("input", watchSession);
-$("sessDate").addEventListener("change", watchSession);
-$("sessDate").value = todayStr();
+$("sessSubject")?.addEventListener("input", watchSession);
+$("sessDate")?.addEventListener("change", watchSession);
+if ($("sessDate")) $("sessDate").value = todayStr();
 
 function renderSessionList() {
   const hasSetup = !!(sessionSubject && sessionDate);
-  $("sessionView").classList.toggle("hidden", !hasSetup);
-  $("sessionPrompt").classList.toggle("hidden", hasSetup);
+  $("sessionView")?.classList.toggle("hidden", !hasSetup);
+  $("sessionPrompt")?.classList.toggle("hidden", hasSetup);
   if (!hasSetup) return;
 
-  $("sessionTitle").textContent = `${sessionSubject} · ${formatDate(sessionDate)}`;
+  const st = $("sessionTitle");
+  if (st) st.textContent = `${sessionSubject} · ${formatDate(sessionDate)}`;
 
   let presentCount = 0, absentCount = 0;
   students.forEach(s => {
-    const st = sessionRecords[s.id]?.status;
-    if (st === "present") presentCount++;
-    else if (st === "absent") absentCount++;
+    const v = sessionRecords[s.id]?.status;
+    if (v === "present") presentCount++;
+    else if (v === "absent") absentCount++;
   });
   const unmarked = students.length - presentCount - absentCount;
 
-  $("sessionStats").innerHTML = `
+  const statsEl = $("sessionStats");
+  if (statsEl) statsEl.innerHTML = `
     <span class="stat-pill present"><i class="fa-solid fa-check"></i> <b>${presentCount}</b> present</span>
     <span class="stat-pill absent"><i class="fa-solid fa-xmark"></i> <b>${absentCount}</b> absent</span>
     <span class="stat-pill"><i class="fa-regular fa-circle"></i> <b>${unmarked}</b> unmarked</span>
   `;
 
+  const listEl = $("sessionList");
+  if (!listEl) return;
+
   if (!students.length) {
-    $("sessionList").innerHTML = `<p class="hint" style="margin:0;">No students yet. Add some in the Add tab.</p>`;
+    listEl.innerHTML = `<p class="hint" style="margin:0;">No students yet. Add some in the Add tab.</p>`;
     return;
   }
 
   const sorted = [...students].sort((a, b) =>
     String(a.roll||"").localeCompare(String(b.roll||""), undefined, { numeric: true }));
 
-  $("sessionList").innerHTML = sorted.map((s, i) => {
-    const st = sessionRecords[s.id]?.status || null;
+  listEl.innerHTML = sorted.map((s, i) => {
+    const v = sessionRecords[s.id]?.status || null;
     return `
-      <div class="student-row ${st === "present" ? "is-present" : ""} ${st === "absent" ? "is-absent" : ""}"
+      <div class="student-row ${v === "present" ? "is-present" : ""} ${v === "absent" ? "is-absent" : ""}"
            style="animation-delay:${Math.min(i*15, 200)}ms">
         ${avatarHTML(s.name, s.photo)}
         <div class="student-row-body">
@@ -2326,11 +2156,11 @@ function renderSessionList() {
           <small>Roll ${esc(s.roll)}</small>
         </div>
         <div class="mark-buttons">
-          <button type="button" class="mark-btn absent ${st === "absent" ? "active" : ""}"
+          <button type="button" class="mark-btn absent ${v === "absent" ? "active" : ""}"
                   data-id="${esc(s.id)}" data-status="absent" aria-label="Mark absent">
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <button type="button" class="mark-btn present ${st === "present" ? "active" : ""}"
+          <button type="button" class="mark-btn present ${v === "present" ? "active" : ""}"
                   data-id="${esc(s.id)}" data-status="present" aria-label="Mark present">
             <i class="fa-solid fa-check"></i>
           </button>
@@ -2338,7 +2168,7 @@ function renderSessionList() {
       </div>`;
   }).join("");
 
-  $("sessionList").querySelectorAll(".mark-btn").forEach(btn => {
+  listEl.querySelectorAll(".mark-btn").forEach(btn => {
     btn.addEventListener("click", () => markStudent(btn.dataset.id, btn.dataset.status, btn));
   });
 }
@@ -2352,31 +2182,24 @@ async function markStudent(studentId, newStatus, btn) {
   try {
     await applyAttendanceMark(studentId, sessionSubject, sessionDate, newStatus);
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
+    console.error(err); toast(fbError(err), "error");
   } finally {
     rowButtons.forEach(b => { if (b.isConnected) b.disabled = false; });
   }
 }
 
-/* ==========================================================
-   ADMIN — Manage list
-   ========================================================== */
-let pendingDeleteId = null;
+/* ---------- Admin manage list ---------- */
 const confirmModal = $("confirmModal");
 const confirmMsg = $("confirmMsg");
 const confirmOk = $("confirmOk");
 const managePhotoInput = $("managePhotoInput");
-let photoUpdateTargetId = null;
 
 function closeConfirm() {
-  confirmModal.classList.add("hidden");
+  confirmModal?.classList.add("hidden");
   pendingDeleteId = null;
-  confirmOk.disabled = false;
-  confirmOk.textContent = "Delete";
+  if (confirmOk) { confirmOk.disabled = false; confirmOk.textContent = "Delete"; }
 }
-confirmModal.querySelectorAll("[data-close-confirm]").forEach(el =>
-  el.addEventListener("click", closeConfirm));
+document.querySelectorAll("[data-close-confirm]").forEach(el => el.addEventListener("click", closeConfirm));
 
 async function bulkDeleteByStudent(collectionRef, studentId) {
   try {
@@ -2389,13 +2212,10 @@ async function bulkDeleteByStudent(collectionRef, studentId) {
       await batch.commit();
     }
     return docs.length;
-  } catch (e) {
-    console.warn("Bulk delete failed:", e);
-    return 0;
-  }
+  } catch (e) { console.warn("Bulk delete failed:", e); return 0; }
 }
 
-confirmOk.addEventListener("click", async () => {
+confirmOk?.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
   const id = pendingDeleteId;
   const st = students.find(x => x.id === id);
@@ -2408,14 +2228,12 @@ confirmOk.addEventListener("click", async () => {
     toast(`Deleted: ${st?.name || "student"} (records & activity cleared)`, "success");
     closeConfirm();
   } catch (err) {
-    console.error(err);
-    toast(fbError(err), "error");
-    confirmOk.disabled = false;
-    confirmOk.textContent = "Delete";
+    console.error(err); toast(fbError(err), "error");
+    confirmOk.disabled = false; confirmOk.textContent = "Delete";
   }
 });
 
-managePhotoInput.addEventListener("change", async (e) => {
+managePhotoInput?.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file || !photoUpdateTargetId) return;
   const targetId = photoUpdateTargetId;
@@ -2425,8 +2243,7 @@ managePhotoInput.addEventListener("change", async (e) => {
     await updateDoc(doc(db, "students", targetId), { photo: data });
     toast("Photo updated", "success");
   } catch (err) {
-    console.error(err);
-    toast(err.message || fbError(err), "error");
+    console.error(err); toast(err.message || fbError(err), "error");
   } finally {
     e.target.value = "";
   }
@@ -2435,7 +2252,8 @@ managePhotoInput.addEventListener("change", async (e) => {
 function renderAdminList() {
   const el = $("adminList");
   if (!el) return;
-  $("adminCount").textContent = students.length
+  const cnt = $("adminCount");
+  if (cnt) cnt.textContent = students.length
     ? `${students.length} student${students.length > 1 ? "s" : ""}` : "";
 
   if (!students.length) {
@@ -2454,12 +2272,8 @@ function renderAdminList() {
         <small>Roll ${esc(s.roll)} · ${Number(s.totalPresent)||0} present</small>
       </div>
       <div class="admin-row-actions">
-        <button class="btn-icon-sm" data-photo="${esc(s.id)}" title="Update photo" aria-label="Update photo">
-          <i class="fa-solid fa-camera"></i>
-        </button>
-        <button class="btn-icon-sm" data-del="${esc(s.id)}" data-name="${esc(s.name)}" title="Delete" aria-label="Delete">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <button class="btn-icon-sm" data-photo="${esc(s.id)}" title="Update photo"><i class="fa-solid fa-camera"></i></button>
+        <button class="btn-icon-sm" data-del="${esc(s.id)}" data-name="${esc(s.name)}" title="Delete"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
   `).join("");
@@ -2467,31 +2281,26 @@ function renderAdminList() {
   el.querySelectorAll("[data-photo]").forEach(btn => {
     btn.addEventListener("click", () => {
       photoUpdateTargetId = btn.dataset.photo;
-      managePhotoInput.click();
+      managePhotoInput?.click();
     });
   });
 
   el.querySelectorAll("[data-del]").forEach(btn => {
     btn.addEventListener("click", () => {
       pendingDeleteId = btn.dataset.del;
-      confirmMsg.textContent = `"${btn.dataset.name}" and all their attendance history & activity will be permanently removed.`;
-      confirmModal.classList.remove("hidden");
+      if (confirmMsg) confirmMsg.textContent = `"${btn.dataset.name}" and all their attendance history & activity will be permanently removed.`;
+      confirmModal?.classList.remove("hidden");
     });
   });
 }
 
-/* ==========================================================
-   ADMIN — Activity feed
-   ========================================================== */
+/* ---------- Activity ---------- */
 onSnapshot(
   query(logsCol, orderBy("createdAt", "desc"), limit(15)),
   (snap) => {
     const el = $("activityList");
     if (!el) return;
-    if (snap.empty) {
-      el.innerHTML = `<p class="hint" style="margin:0;">No activity yet.</p>`;
-      return;
-    }
+    if (snap.empty) { el.innerHTML = `<p class="hint" style="margin:0;">No activity yet.</p>`; return; }
     el.innerHTML = snap.docs.map(d => {
       const l = d.data();
       const t = l.createdAt?.toDate ? l.createdAt.toDate() : null;
