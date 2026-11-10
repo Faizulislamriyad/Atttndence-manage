@@ -659,7 +659,7 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-icon"><i class="fa-solid fa-clipboard-user"></i></div>
-      <h1>Class Attendance</h1>
+      <h1>Class Attendance <span id="appVersion" style="font-size:.62rem;color:var(--muted);font-weight:400;margin-left:4px;">v?</span></h1>
     </div>
     <button id="themeBtn" class="icon-btn" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
   </header>
@@ -962,28 +962,41 @@
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDoc, getDocs,
-  query, where, onSnapshot, orderBy, limit, serverTimestamp, runTransaction, writeBatch
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {
-  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-/* ---------- Global error display (so failures are visible) ---------- */
+<script>
+/* ==========================================================
+   APP v4.0 — Compat SDK (no modules, works everywhere)
+   ========================================================== */
+console.log("🔥 App v4.0 booting (compat SDK)...");
+
+/* ---------- Version badge ---------- */
+const __v = document.getElementById("appVersion");
+if (__v) __v.textContent = "v4.0";
+
+/* ---------- Global error display ---------- */
 function showError(msg) {
+  console.error("⚠️ App Error:", msg);
   const el = document.getElementById("errorBanner");
   if (!el) return;
   el.textContent = "⚠️ Error: " + msg;
   el.classList.add("show");
-  setTimeout(() => el.classList.remove("show"), 8000);
+  setTimeout(() => el.classList.remove("show"), 15000);
 }
 window.addEventListener("error", (e) => showError(e.message || "Unknown error"));
 window.addEventListener("unhandledrejection", (e) => showError(e.reason?.message || String(e.reason)));
 
-/* ---------- Firebase ---------- */
+/* ---------- Verify SDK loaded ---------- */
+if (typeof firebase === "undefined") {
+  showError("Firebase SDK failed to load. Check internet / ad blocker / CDN access.");
+} else {
+  console.log("✅ Firebase SDK loaded");
+}
+
+/* ---------- Firebase config & init ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAclLFCouG4exFxs0wYsWhlhAqf2y4LmlI",
   authDomain: "present-manage.firebaseapp.com",
@@ -993,21 +1006,29 @@ const firebaseConfig = {
   appId: "1:947767975289:web:62d0491cae58fbdfeee3a8",
   measurementId: "G-NKHC7XHBT1"
 };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const studentsCol = collection(db, "students");
-const logsCol = collection(db, "attendance_logs");
-const recordsCol = collection(db, "attendance_records");
-const pendingCol = collection(db, "pending_requests");
-const sessionsCol = collection(db, "sessions");
+
+try {
+  firebase.initializeApp(firebaseConfig);
+} catch (e) {
+  showError("Firebase init failed: " + e.message);
+}
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+const FieldValue = firebase.firestore.FieldValue;
+
+const studentsCol = db.collection("students");
+const logsCol = db.collection("attendance_logs");
+const recordsCol = db.collection("attendance_records");
+const pendingCol = db.collection("pending_requests");
+const sessionsCol = db.collection("sessions");
+
+console.log("✅ Firebase initialized");
 
 const AUTHORIZED_EMAILS = ["mdriyadboss1234@gmail.com"];
 
 /* ==========================================================
-   ⚠️ ALL STATE VARIABLES — declared at TOP to prevent TDZ
-   (this was the bug — onSnapshot sometimes fires before
-   variables declared lower in the file were initialized)
+   STATE VARIABLES (all at top to avoid TDZ)
    ========================================================== */
 let toastTimer = null;
 let students = [];
@@ -1120,16 +1141,12 @@ function applyTheme(theme) {
   if (themeBtn) themeBtn.innerHTML = theme === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
   if (themeColorMeta) themeColorMeta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
 }
-try {
-  applyTheme(localStorage.getItem("ca_theme") || "light");
-} catch (e) {
-  applyTheme("light");
-}
-themeBtn?.addEventListener("click", () => {
+try { applyTheme(localStorage.getItem("ca_theme") || "light"); } catch (e) { applyTheme("light"); }
+themeBtn && themeBtn.addEventListener("click", () => {
   applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
 });
 
-/* ---------- Validation helpers ---------- */
+/* ---------- Validation ---------- */
 function setFieldError(name, msg) {
   const el = document.querySelector(`[data-error-for="${name}"]`);
   if (el) { el.textContent = msg || ""; el.classList.toggle("show", !!msg); }
@@ -1192,7 +1209,7 @@ const studentsGrid = $("studentsGrid");
 const searchInput = $("searchInput");
 const searchClear = $("searchClear");
 
-/* ---------- Student card rendering ---------- */
+/* ---------- Skeleton ---------- */
 function renderSkeleton() {
   if (!studentsGrid) return;
   studentsGrid.innerHTML = Array.from({ length: 6 }).map(() => `
@@ -1255,28 +1272,28 @@ function renderStudents() {
   studentsGrid.innerHTML = list.map(cardHTML).join("");
 }
 
-studentsGrid?.addEventListener("click", (e) => {
+studentsGrid && studentsGrid.addEventListener("click", (e) => {
   const card = e.target.closest(".student-card");
   if (!card) return;
   const id = card.dataset.student;
   if (id) openStudentDetail(id);
 });
 
-searchInput?.addEventListener("input", () => {
+searchInput && searchInput.addEventListener("input", () => {
   searchQuery = searchInput.value;
-  searchClear?.classList.toggle("hidden", !searchQuery);
+  searchClear && searchClear.classList.toggle("hidden", !searchQuery);
   renderStudents();
 });
-searchClear?.addEventListener("click", () => {
+searchClear && searchClear.addEventListener("click", () => {
   if (searchInput) searchInput.value = "";
   searchQuery = "";
   searchClear.classList.add("hidden");
-  searchInput?.focus();
+  searchInput && searchInput.focus();
   renderStudents();
 });
 
 /* ---------- Students live data ---------- */
-onSnapshot(studentsCol,
+studentsCol.onSnapshot(
   (snap) => {
     students = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     initialLoaded = true;
@@ -1286,7 +1303,7 @@ onSnapshot(studentsCol,
     renderSessionList();
   },
   (err) => {
-    console.error(err);
+    console.error("Students snapshot:", err);
     initialLoaded = true;
     toast("Could not load students: " + fbError(err), "error");
     if (studentsGrid) studentsGrid.innerHTML = `
@@ -1309,17 +1326,14 @@ function renderSubjectOptions() {
 }
 
 /* ---------- Sessions ---------- */
-onSnapshot(
-  query(sessionsCol, orderBy("date", "desc"), limit(200)),
+sessionsCol.orderBy("date", "desc").limit(200).onSnapshot(
   (snap) => {
     sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     renderOverviewFilters();
     renderRequestDropdowns();
   },
-  (err) => {
-    console.warn("Sessions snapshot:", err);
-  }
+  (err) => console.warn("Sessions snapshot:", err)
 );
 
 /* ---------- Overview ---------- */
@@ -1350,7 +1364,7 @@ function renderOverviewFilters() {
 }
 
 function renderOverviewSubjects() {
-  const date = $("ovDate")?.value;
+  const date = $("ovDate") && $("ovDate").value;
   const subSel = $("ovSubject");
   if (!subSel) return;
   const subjectsForDate = [...new Set(sessions.filter(s => s.date === date).map(s => s.subject))].sort();
@@ -1375,8 +1389,8 @@ function renderOverviewSubjects() {
 
 function updateOverview() {
   if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
-  const date = $("ovDate")?.value;
-  const subject = $("ovSubject")?.value;
+  const date = $("ovDate") && $("ovDate").value;
+  const subject = $("ovSubject") && $("ovSubject").value;
   const ob = $("overviewBody");
   if (!ob) return;
   if (!date || !subject) {
@@ -1385,60 +1399,62 @@ function updateOverview() {
   }
   ob.innerHTML = `<div class="overview-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
 
-  overviewUnsub = onSnapshot(
-    query(recordsCol, where("date", "==", date), where("subject", "==", subject)),
-    (snap) => {
-      const allRecords = snap.docs.map(d => d.data());
-      const presents = allRecords.filter(r => r.status === "present");
-      const absents = allRecords.filter(r => r.status === "absent");
+  overviewUnsub = recordsCol
+    .where("date", "==", date)
+    .where("subject", "==", subject)
+    .onSnapshot(
+      (snap) => {
+        const allRecords = snap.docs.map(d => d.data());
+        const presents = allRecords.filter(r => r.status === "present");
+        const absents = allRecords.filter(r => r.status === "absent");
 
-      if (!allRecords.length) {
-        ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i> No attendance marked yet for this session.</div>`;
-        return;
-      }
-      if (!presents.length) {
+        if (!allRecords.length) {
+          ob.innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i> No attendance marked yet for this session.</div>`;
+          return;
+        }
+        if (!presents.length) {
+          ob.innerHTML = `
+            <div class="overview-session-head">
+              <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
+              <span class="overview-counts"><span class="absent">0 present</span></span>
+            </div>
+            <div class="overview-empty"><i class="fa-solid fa-user-xmark"></i> No students marked present.</div>`;
+          return;
+        }
+
+        const sorted = [...presents].sort((a, b) =>
+          String(a.studentRoll||"").localeCompare(String(b.studentRoll||""), undefined, { numeric: true }));
+
         ob.innerHTML = `
           <div class="overview-session-head">
             <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
-            <span class="overview-counts"><span class="absent">0 present</span></span>
+            <span class="overview-counts">
+              <span class="present">${presents.length} present</span>
+              ${absents.length ? `<span class="absent">${absents.length} absent</span>` : ""}
+            </span>
           </div>
-          <div class="overview-empty"><i class="fa-solid fa-user-xmark"></i> No students marked present.</div>`;
-        return;
+          <div class="overview-list">
+            ${sorted.map(r => `
+              <div class="overview-row">
+                ${avatarHTML(r.studentName || "?", "")}
+                <strong>${esc(r.studentName || "?")}</strong>
+                <small>Roll ${esc(r.studentRoll || "-")}</small>
+              </div>`).join("")}
+          </div>`;
+      },
+      (err) => {
+        console.error("Overview snapshot:", err);
+        ob.innerHTML = `<div class="overview-empty"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(fbError(err))}</div>`;
       }
-
-      const sorted = [...presents].sort((a, b) =>
-        String(a.studentRoll||"").localeCompare(String(b.studentRoll||""), undefined, { numeric: true }));
-
-      ob.innerHTML = `
-        <div class="overview-session-head">
-          <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
-          <span class="overview-counts">
-            <span class="present">${presents.length} present</span>
-            ${absents.length ? `<span class="absent">${absents.length} absent</span>` : ""}
-          </span>
-        </div>
-        <div class="overview-list">
-          ${sorted.map(r => `
-            <div class="overview-row">
-              ${avatarHTML(r.studentName || "?", "")}
-              <strong>${esc(r.studentName || "?")}</strong>
-              <small>Roll ${esc(r.studentRoll || "-")}</small>
-            </div>`).join("")}
-        </div>`;
-    },
-    (err) => {
-      console.error(err);
-      ob.innerHTML = `<div class="overview-empty"><i class="fa-solid fa-triangle-exclamation"></i> ${esc(fbError(err))}</div>`;
-    }
-  );
+    );
 }
 
-$("ovDate")?.addEventListener("change", () => {
+$("ovDate") && $("ovDate").addEventListener("change", () => {
   ovSelectedDate = $("ovDate").value;
   renderOverviewSubjects();
   updateOverview();
 });
-$("ovSubject")?.addEventListener("change", () => {
+$("ovSubject") && $("ovSubject").addEventListener("change", () => {
   ovSelectedSubject = $("ovSubject").value;
   updateOverview();
 });
@@ -1468,26 +1484,26 @@ function renderRequestDropdowns() {
   subSel.value = subjectsForDate.includes(prevSub) ? prevSub : (subjectsForDate[0] || "");
 }
 
-$("reqDate")?.addEventListener("change", renderRequestDropdowns);
+$("reqDate") && $("reqDate").addEventListener("change", renderRequestDropdowns);
 
 /* ---------- Public modal open/close ---------- */
-$("btnAttendance")?.addEventListener("click", () => {
-  $("attendanceModal")?.classList.remove("hidden");
+$("btnAttendance") && $("btnAttendance").addEventListener("click", () => {
+  $("attendanceModal") && $("attendanceModal").classList.remove("hidden");
   document.body.classList.add("lock");
   renderRequestDropdowns();
 });
-$("btnUploadInfo")?.addEventListener("click", () => {
-  $("infoModal")?.classList.remove("hidden");
+$("btnUploadInfo") && $("btnUploadInfo").addEventListener("click", () => {
+  $("infoModal") && $("infoModal").classList.remove("hidden");
   document.body.classList.add("lock");
 });
 document.querySelectorAll("[data-close-attendance]").forEach(el =>
   el.addEventListener("click", () => {
-    $("attendanceModal")?.classList.add("hidden");
+    $("attendanceModal") && $("attendanceModal").classList.add("hidden");
     document.body.classList.remove("lock");
   }));
 document.querySelectorAll("[data-close-info]").forEach(el =>
   el.addEventListener("click", () => {
-    $("infoModal")?.classList.add("hidden");
+    $("infoModal") && $("infoModal").classList.add("hidden");
     document.body.classList.remove("lock");
   }));
 
@@ -1507,7 +1523,7 @@ function updateInfoPhotoPreview() {
     infoPhotoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
   }
 }
-infoPhotoInput?.addEventListener("change", async (e) => {
+infoPhotoInput && infoPhotoInput.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   try {
@@ -1518,19 +1534,19 @@ infoPhotoInput?.addEventListener("change", async (e) => {
     e.target.value = "";
   }
 });
-$("infoPhotoClear")?.addEventListener("click", () => {
+$("infoPhotoClear") && $("infoPhotoClear").addEventListener("click", () => {
   infoPhotoData = ""; if (infoPhotoInput) infoPhotoInput.value = ""; updateInfoPhotoPreview();
 });
 
 /* ---------- Public forms ---------- */
-$("attendanceReqForm")?.addEventListener("submit", async (e) => {
+$("attendanceReqForm") && $("attendanceReqForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
 
-  const date = $("reqDate")?.value;
-  const subject = $("reqSubject")?.value;
-  const roll = $("reqRoll")?.value.trim();
+  const date = $("reqDate") && $("reqDate").value;
+  const subject = $("reqSubject") && $("reqSubject").value;
+  const roll = $("reqRoll") && $("reqRoll").value.trim();
 
   if (!date) { toast("Please select a date", "error"); return; }
   if (!subject) { toast("Please select a subject", "error"); return; }
@@ -1538,7 +1554,7 @@ $("attendanceReqForm")?.addEventListener("submit", async (e) => {
   if (rollErr) { setFieldError("reqRoll", rollErr); return; }
 
   try {
-    const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    const snap = await studentsCol.where("roll", "==", roll).get();
     if (snap.empty) {
       setFieldError("reqRoll", `No student with roll "${roll}". Upload your info first.`);
       return;
@@ -1551,15 +1567,15 @@ $("attendanceReqForm")?.addEventListener("submit", async (e) => {
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending...'; }
 
   try {
-    await addDoc(pendingCol, {
+    await pendingCol.add({
       type: "attendance", roll, date,
       subject: sanitizeSubject(subject),
       originalSubject: subject,
-      submittedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
+      submittedAt: FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp()
     });
     form.reset();
-    $("attendanceModal")?.classList.add("hidden");
+    $("attendanceModal") && $("attendanceModal").classList.add("hidden");
     document.body.classList.remove("lock");
     toast("Request sent! Admin will review it shortly.", "success");
   } catch (err) {
@@ -1569,13 +1585,13 @@ $("attendanceReqForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-$("infoForm")?.addEventListener("submit", async (e) => {
+$("infoForm") && $("infoForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
 
-  const name = $("infoName")?.value.trim();
-  const roll = $("infoRoll")?.value.trim();
+  const name = $("infoName") && $("infoName").value.trim();
+  const roll = $("infoRoll") && $("infoRoll").value.trim();
 
   const nameErr = validateName(name);
   const rollErr = validateRoll(roll);
@@ -1587,15 +1603,15 @@ $("infoForm")?.addEventListener("submit", async (e) => {
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending...'; }
 
   try {
-    await addDoc(pendingCol, {
+    await pendingCol.add({
       type: "info", name, roll,
       photo: infoPhotoData || "",
-      submittedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
+      submittedAt: FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp()
     });
     form.reset();
     infoPhotoData = ""; if (infoPhotoInput) infoPhotoInput.value = ""; updateInfoPhotoPreview();
-    $("infoModal")?.classList.add("hidden");
+    $("infoModal") && $("infoModal").classList.add("hidden");
     document.body.classList.remove("lock");
     toast("Info sent! Admin will review it shortly.", "success");
   } catch (err) {
@@ -1606,8 +1622,7 @@ $("infoForm")?.addEventListener("submit", async (e) => {
 });
 
 /* ---------- Pending (admin) ---------- */
-onSnapshot(
-  query(pendingCol, orderBy("createdAt", "desc"), limit(50)),
+pendingCol.orderBy("createdAt", "desc").limit(50).onSnapshot(
   (snap) => {
     pendingRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderPendingList();
@@ -1690,7 +1705,7 @@ async function rejectRequest(requestId, btn) {
   const buttons = item.querySelectorAll(".pending-btn");
   buttons.forEach(b => b.disabled = true);
   try {
-    await deleteDoc(doc(pendingCol, requestId));
+    await pendingCol.doc(requestId).delete();
     toast("Request rejected", "info");
   } catch (err) {
     console.error(err); toast(fbError(err), "error");
@@ -1714,7 +1729,7 @@ async function approveRequest(requestId, btn) {
     else if (req.type === "attendance") result = await approveAttendanceRequest(req);
     else throw new Error("Unknown request type");
 
-    await deleteDoc(doc(pendingCol, requestId));
+    await pendingCol.doc(requestId).delete();
     toast(result?.message || "Request approved", "success");
   } catch (err) {
     console.error(err); toast(fbError(err), "error");
@@ -1728,14 +1743,16 @@ async function approveInfoRequest(req) {
   const name = String(req.name || "").trim();
   if (!name || !roll) throw new Error("Missing name or roll");
 
-  const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+  const snap = await studentsCol.where("roll", "==", roll).get();
   if (!snap.empty) {
-    await updateDoc(snap.docs[0].ref, { name, photo: req.photo || "", updatedAt: serverTimestamp() });
+    const updates = { name, updatedAt: FieldValue.serverTimestamp() };
+    if (req.photo) updates.photo = req.photo;
+    await snap.docs[0].ref.update(updates);
     return { message: `Updated info for ${name} (Roll ${roll})` };
   } else {
-    await addDoc(studentsCol, {
+    await studentsCol.add({
       name, roll, photo: req.photo || "",
-      subjects: {}, totalPresent: 0, createdAt: serverTimestamp()
+      subjects: {}, totalPresent: 0, createdAt: FieldValue.serverTimestamp()
     });
     return { message: `${name} added (Roll ${roll})` };
   }
@@ -1747,7 +1764,7 @@ async function approveAttendanceRequest(req) {
   const subject = String(req.originalSubject || req.subject || "").trim();
   if (!roll || !date || !subject) throw new Error("Missing attendance data");
 
-  const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+  const snap = await studentsCol.where("roll", "==", roll).get();
   if (snap.empty) throw new Error(`No student with roll "${roll}"`);
 
   const studentDoc = snap.docs[0];
@@ -1755,8 +1772,8 @@ async function approveAttendanceRequest(req) {
   const studentName = studentDoc.data().name || roll;
   const sanitizedSubject = sanitizeSubject(subject);
   const recordId = `${date}__${sanitizedSubject}__${studentId}`;
-  const recordSnap = await getDoc(doc(recordsCol, recordId));
-  if (recordSnap.exists() && recordSnap.data().status === "present") {
+  const recordSnap = await recordsCol.doc(recordId).get();
+  if (recordSnap.exists && recordSnap.data().status === "present") {
     return { message: `${studentName} already marked present in ${subject}` };
   }
   await applyAttendanceMark(studentId, subject, date, "present");
@@ -1767,19 +1784,19 @@ async function approveAttendanceRequest(req) {
 async function applyAttendanceMark(studentId, subject, date, newStatus) {
   const sanitized = sanitizeSubject(subject);
   const recordId = `${date}__${sanitized}__${studentId}`;
-  const recordRef = doc(recordsCol, recordId);
-  const logRef = doc(logsCol, recordId);
-  const studentRef = doc(db, "students", studentId);
-  const sessionRef = doc(sessionsCol, `${date}__${sanitized}`);
+  const recordRef = recordsCol.doc(recordId);
+  const logRef = logsCol.doc(recordId);
+  const studentRef = studentsCol.doc(studentId);
+  const sessionRef = sessionsCol.doc(`${date}__${sanitized}`);
 
   let wasPresent = false, isPresent = false;
 
-  await runTransaction(db, async (tx) => {
+  await db.runTransaction(async (tx) => {
     const recordSnap = await tx.get(recordRef);
     const studentSnap = await tx.get(studentRef);
-    if (!studentSnap.exists()) throw new Error("Student not found");
+    if (!studentSnap.exists) throw new Error("Student not found");
 
-    const prevStatus = recordSnap.exists() ? recordSnap.data().status : null;
+    const prevStatus = recordSnap.exists ? recordSnap.data().status : null;
     wasPresent = prevStatus === "present";
 
     const sdata = studentSnap.data();
@@ -1798,19 +1815,19 @@ async function applyAttendanceMark(studentId, subject, date, newStatus) {
       tx.set(recordRef, {
         studentId, studentName: sdata.name || "", studentRoll: sdata.roll || "",
         date, subject: sanitized, status: newStatus,
-        markedAt: Date.now(), markedBy: auth.currentUser?.email || ""
+        markedAt: Date.now(), markedBy: (auth.currentUser && auth.currentUser.email) || ""
       });
       if (newStatus === "present") {
         tx.set(logRef, {
           studentId, name: sdata.name || "", roll: sdata.roll || "",
           subject: sanitized, sessionDate: date,
-          markedBy: auth.currentUser?.email || "",
-          createdAt: serverTimestamp()
+          markedBy: (auth.currentUser && auth.currentUser.email) || "",
+          createdAt: FieldValue.serverTimestamp()
         });
       } else {
         tx.delete(logRef);
       }
-      tx.set(sessionRef, { date, subject: sanitized, updatedAt: serverTimestamp() }, { merge: true });
+      tx.set(sessionRef, { date, subject: sanitized, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     }
 
     isPresent = finalStatus === "present";
@@ -1825,7 +1842,7 @@ async function applyAttendanceMark(studentId, subject, date, newStatus) {
       tx.update(studentRef, {
         totalPresent: newTotal,
         [`subjects.${sanitized}`]: newSubj,
-        updatedAt: serverTimestamp()
+        updatedAt: FieldValue.serverTimestamp()
       });
     }
   });
@@ -1838,22 +1855,22 @@ const adminPanel = $("adminPanel");
 const adminFab = $("adminFab");
 
 function openPanel() {
-  adminPanel?.classList.remove("hidden");
+  adminPanel && adminPanel.classList.remove("hidden");
   document.body.classList.add("lock");
 }
 function closePanel() {
-  adminPanel?.classList.add("hidden");
+  adminPanel && adminPanel.classList.add("hidden");
   document.body.classList.remove("lock");
 }
-adminFab?.addEventListener("click", openPanel);
-$("panelClose")?.addEventListener("click", closePanel);
+adminFab && adminFab.addEventListener("click", openPanel);
+$("panelClose") && $("panelClose").addEventListener("click", closePanel);
 document.querySelectorAll("[data-close-panel]").forEach(el => el.addEventListener("click", closePanel));
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Escape") return;
-  if (!$("attendanceModal")?.classList.contains("hidden")) { $("attendanceModal")?.classList.add("hidden"); document.body.classList.remove("lock"); }
-  else if (!$("infoModal")?.classList.contains("hidden")) { $("infoModal")?.classList.add("hidden"); document.body.classList.remove("lock"); }
-  else if (!$("studentDetail")?.classList.contains("hidden")) closeDetail();
-  else if (!adminPanel?.classList.contains("hidden")) closePanel();
+  if ($("attendanceModal") && !$("attendanceModal").classList.contains("hidden")) { $("attendanceModal").classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if ($("infoModal") && !$("infoModal").classList.contains("hidden")) { $("infoModal").classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if ($("studentDetail") && !$("studentDetail").classList.contains("hidden")) closeDetail();
+  else if (adminPanel && !adminPanel.classList.contains("hidden")) closePanel();
 });
 
 document.querySelectorAll(".panel-tab").forEach(tab => {
@@ -1889,11 +1906,11 @@ async function openStudentDetail(studentId) {
   const hist = $("detailHistory");
   if (hist) hist.innerHTML = `<div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
 
-  $("studentDetail")?.classList.remove("hidden");
+  $("studentDetail") && $("studentDetail").classList.remove("hidden");
   document.body.classList.add("lock");
 
   try {
-    const snap = await getDocs(query(recordsCol, where("studentId", "==", studentId)));
+    const snap = await recordsCol.where("studentId", "==", studentId).get();
     const presents = snap.docs.map(d => d.data()).filter(r => r.status === "present");
 
     if (!presents.length) {
@@ -1933,7 +1950,7 @@ async function openStudentDetail(studentId) {
   }
 }
 function closeDetail() {
-  $("studentDetail")?.classList.add("hidden");
+  $("studentDetail") && $("studentDetail").classList.add("hidden");
   document.body.classList.remove("lock");
 }
 document.querySelectorAll("[data-close-detail]").forEach(el => el.addEventListener("click", closeDetail));
@@ -1952,38 +1969,38 @@ const isAuthorized = (user) => {
 };
 
 function showLoginView() {
-  loginView?.classList.remove("hidden");
-  adminView?.classList.add("hidden");
+  loginView && loginView.classList.remove("hidden");
+  adminView && adminView.classList.add("hidden");
   if (panelTitle) panelTitle.textContent = "Admin Panel";
   if (panelSubtitle) panelSubtitle.textContent = "Sign in to manage attendance";
 }
 function showAdminView(user) {
-  loginView?.classList.add("hidden");
-  adminView?.classList.remove("hidden");
+  loginView && loginView.classList.add("hidden");
+  adminView && adminView.classList.remove("hidden");
   if (panelTitle) panelTitle.textContent = "Admin Panel";
   if (panelSubtitle) panelSubtitle.textContent = "Manage students & attendance";
   if (signedEmail) signedEmail.textContent = user.email || "";
   renderAdminList();
 }
 
-onAuthStateChanged(auth, async (user) => {
+auth.onAuthStateChanged(async (user) => {
   if (user && isAuthorized(user)) {
     showAdminView(user);
   } else {
     if (user) {
-      await signOut(auth).catch(() => {});
+      await auth.signOut().catch(() => {});
       toast("This account is not authorized for admin access.", "error");
     }
     showLoginView();
   }
 });
 
-$("loginForm")?.addEventListener("submit", async (e) => {
+$("loginForm") && $("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
-  const email = $("loginEmail")?.value.trim();
-  const pass = $("loginPass")?.value;
+  const email = $("loginEmail") && $("loginEmail").value.trim();
+  const pass = $("loginPass") && $("loginPass").value;
   const emailErr = validateEmail(email);
   if (emailErr) setFieldError("loginEmail", emailErr);
   if (!pass) setFieldError("loginPass", "Password is required");
@@ -1992,9 +2009,9 @@ $("loginForm")?.addEventListener("submit", async (e) => {
   const btn = form.querySelector('button[type="submit"]');
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Signing in...'; }
   try {
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
     if (!isAuthorized(cred.user)) {
-      await signOut(auth);
+      await auth.signOut();
       throw new Error("This email is not authorized for admin access.");
     }
     form.reset();
@@ -2006,8 +2023,8 @@ $("loginForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-$("logoutBtn")?.addEventListener("click", async () => {
-  try { await signOut(auth); toast("Logged out", "info"); }
+$("logoutBtn") && $("logoutBtn").addEventListener("click", async () => {
+  try { await auth.signOut(); toast("Logged out", "info"); }
   catch (err) { toast(fbError(err), "error"); }
 });
 
@@ -2027,7 +2044,7 @@ function updatePhotoPreview() {
     photoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
   }
 }
-photoInput?.addEventListener("change", async (e) => {
+photoInput && photoInput.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   try {
@@ -2038,16 +2055,16 @@ photoInput?.addEventListener("change", async (e) => {
     e.target.value = "";
   }
 });
-$("photoClear")?.addEventListener("click", () => {
+$("photoClear") && $("photoClear").addEventListener("click", () => {
   addPhotoData = ""; if (photoInput) photoInput.value = ""; updatePhotoPreview();
 });
 
-$("addStudentForm")?.addEventListener("submit", async (e) => {
+$("addStudentForm") && $("addStudentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target;
   clearErrors(form);
-  const name = $("addName")?.value.trim();
-  const roll = $("addRoll")?.value.trim();
+  const name = $("addName") && $("addName").value.trim();
+  const roll = $("addRoll") && $("addRoll").value.trim();
   const nameErr = validateName(name);
   const rollErr = validateRoll(roll);
   if (nameErr) setFieldError("addName", nameErr);
@@ -2057,19 +2074,19 @@ $("addStudentForm")?.addEventListener("submit", async (e) => {
   const btn = form.querySelector('button[type="submit"]');
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Adding...'; }
   try {
-    const dup = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    const dup = await studentsCol.where("roll", "==", roll).get();
     if (!dup.empty) {
       setFieldError("addRoll", `Roll "${roll}" already exists`);
       toast("This roll number is already taken", "error");
       return;
     }
-    await addDoc(studentsCol, {
+    await studentsCol.add({
       name, roll, photo: addPhotoData || "",
-      subjects: {}, totalPresent: 0, createdAt: serverTimestamp()
+      subjects: {}, totalPresent: 0, createdAt: FieldValue.serverTimestamp()
     });
     form.reset();
     addPhotoData = ""; if (photoInput) photoInput.value = ""; updatePhotoPreview();
-    $("addName")?.focus();
+    $("addName") && $("addName").focus();
     toast(`${name} added successfully`, "success");
   } catch (err) {
     console.error(err); toast(fbError(err), "error");
@@ -2081,8 +2098,8 @@ $("addStudentForm")?.addEventListener("submit", async (e) => {
 /* ---------- Admin present session ---------- */
 function watchSession() {
   if (sessionUnsub) { sessionUnsub(); sessionUnsub = null; }
-  const subject = $("sessSubject")?.value.trim() || "";
-  const date = $("sessDate")?.value || "";
+  const subject = ($("sessSubject") && $("sessSubject").value.trim()) || "";
+  const date = ($("sessDate") && $("sessDate").value) || "";
   sessionSubject = subject;
   sessionDate = date;
   sessionRecords = {};
@@ -2090,30 +2107,32 @@ function watchSession() {
   if (!subject || !date) { renderSessionList(); return; }
   renderSessionList();
 
-  sessionUnsub = onSnapshot(
-    query(recordsCol, where("date", "==", date), where("subject", "==", sanitizeSubject(subject))),
-    (snap) => {
-      sessionRecords = {};
-      snap.docs.forEach(d => {
-        const r = d.data();
-        sessionRecords[r.studentId] = { status: r.status, markedAt: r.markedAt };
-      });
-      renderSessionList();
-    },
-    (err) => {
-      console.error(err);
-      toast("Session error: " + fbError(err), "error");
-    }
-  );
+  sessionUnsub = recordsCol
+    .where("date", "==", date)
+    .where("subject", "==", sanitizeSubject(subject))
+    .onSnapshot(
+      (snap) => {
+        sessionRecords = {};
+        snap.docs.forEach(d => {
+          const r = d.data();
+          sessionRecords[r.studentId] = { status: r.status, markedAt: r.markedAt };
+        });
+        renderSessionList();
+      },
+      (err) => {
+        console.error("Session snapshot:", err);
+        toast("Session error: " + fbError(err), "error");
+      }
+    );
 }
-$("sessSubject")?.addEventListener("input", watchSession);
-$("sessDate")?.addEventListener("change", watchSession);
+$("sessSubject") && $("sessSubject").addEventListener("input", watchSession);
+$("sessDate") && $("sessDate").addEventListener("change", watchSession);
 if ($("sessDate")) $("sessDate").value = todayStr();
 
 function renderSessionList() {
   const hasSetup = !!(sessionSubject && sessionDate);
-  $("sessionView")?.classList.toggle("hidden", !hasSetup);
-  $("sessionPrompt")?.classList.toggle("hidden", hasSetup);
+  $("sessionView") && $("sessionView").classList.toggle("hidden", !hasSetup);
+  $("sessionPrompt") && $("sessionPrompt").classList.toggle("hidden", hasSetup);
   if (!hasSetup) return;
 
   const st = $("sessionTitle");
@@ -2121,7 +2140,7 @@ function renderSessionList() {
 
   let presentCount = 0, absentCount = 0;
   students.forEach(s => {
-    const v = sessionRecords[s.id]?.status;
+    const v = sessionRecords[s.id] && sessionRecords[s.id].status;
     if (v === "present") presentCount++;
     else if (v === "absent") absentCount++;
   });
@@ -2146,7 +2165,7 @@ function renderSessionList() {
     String(a.roll||"").localeCompare(String(b.roll||""), undefined, { numeric: true }));
 
   listEl.innerHTML = sorted.map((s, i) => {
-    const v = sessionRecords[s.id]?.status || null;
+    const v = (sessionRecords[s.id] && sessionRecords[s.id].status) || null;
     return `
       <div class="student-row ${v === "present" ? "is-present" : ""} ${v === "absent" ? "is-absent" : ""}"
            style="animation-delay:${Math.min(i*15, 200)}ms">
@@ -2195,7 +2214,7 @@ const confirmOk = $("confirmOk");
 const managePhotoInput = $("managePhotoInput");
 
 function closeConfirm() {
-  confirmModal?.classList.add("hidden");
+  confirmModal && confirmModal.classList.add("hidden");
   pendingDeleteId = null;
   if (confirmOk) { confirmOk.disabled = false; confirmOk.textContent = "Delete"; }
 }
@@ -2203,11 +2222,11 @@ document.querySelectorAll("[data-close-confirm]").forEach(el => el.addEventListe
 
 async function bulkDeleteByStudent(collectionRef, studentId) {
   try {
-    const snap = await getDocs(query(collectionRef, where("studentId", "==", studentId)));
+    const snap = await collectionRef.where("studentId", "==", studentId).get();
     if (snap.empty) return 0;
     const docs = snap.docs;
     for (let i = 0; i < docs.length; i += 400) {
-      const batch = writeBatch(db);
+      const batch = db.batch();
       docs.slice(i, i + 400).forEach(d => batch.delete(d.ref));
       await batch.commit();
     }
@@ -2215,7 +2234,7 @@ async function bulkDeleteByStudent(collectionRef, studentId) {
   } catch (e) { console.warn("Bulk delete failed:", e); return 0; }
 }
 
-confirmOk?.addEventListener("click", async () => {
+confirmOk && confirmOk.addEventListener("click", async () => {
   if (!pendingDeleteId) return;
   const id = pendingDeleteId;
   const st = students.find(x => x.id === id);
@@ -2224,7 +2243,7 @@ confirmOk?.addEventListener("click", async () => {
   try {
     await bulkDeleteByStudent(recordsCol, id);
     await bulkDeleteByStudent(logsCol, id);
-    await deleteDoc(doc(db, "students", id));
+    await studentsCol.doc(id).delete();
     toast(`Deleted: ${st?.name || "student"} (records & activity cleared)`, "success");
     closeConfirm();
   } catch (err) {
@@ -2233,14 +2252,14 @@ confirmOk?.addEventListener("click", async () => {
   }
 });
 
-managePhotoInput?.addEventListener("change", async (e) => {
+managePhotoInput && managePhotoInput.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file || !photoUpdateTargetId) return;
   const targetId = photoUpdateTargetId;
   photoUpdateTargetId = null;
   try {
     const data = await processImage(file);
-    await updateDoc(doc(db, "students", targetId), { photo: data });
+    await studentsCol.doc(targetId).update({ photo: data });
     toast("Photo updated", "success");
   } catch (err) {
     console.error(err); toast(err.message || fbError(err), "error");
@@ -2281,7 +2300,7 @@ function renderAdminList() {
   el.querySelectorAll("[data-photo]").forEach(btn => {
     btn.addEventListener("click", () => {
       photoUpdateTargetId = btn.dataset.photo;
-      managePhotoInput?.click();
+      managePhotoInput && managePhotoInput.click();
     });
   });
 
@@ -2289,21 +2308,20 @@ function renderAdminList() {
     btn.addEventListener("click", () => {
       pendingDeleteId = btn.dataset.del;
       if (confirmMsg) confirmMsg.textContent = `"${btn.dataset.name}" and all their attendance history & activity will be permanently removed.`;
-      confirmModal?.classList.remove("hidden");
+      confirmModal && confirmModal.classList.remove("hidden");
     });
   });
 }
 
 /* ---------- Activity ---------- */
-onSnapshot(
-  query(logsCol, orderBy("createdAt", "desc"), limit(15)),
+logsCol.orderBy("createdAt", "desc").limit(15).onSnapshot(
   (snap) => {
     const el = $("activityList");
     if (!el) return;
     if (snap.empty) { el.innerHTML = `<p class="hint" style="margin:0;">No activity yet.</p>`; return; }
     el.innerHTML = snap.docs.map(d => {
       const l = d.data();
-      const t = l.createdAt?.toDate ? l.createdAt.toDate() : null;
+      const t = l.createdAt && l.createdAt.toDate ? l.createdAt.toDate() : null;
       const time = t ? formatTime(t) : "just now";
       const sessionLabel = l.sessionDate ? ` · ${formatDate(l.sessionDate)}` : "";
       return `<div class="activity-item">
@@ -2325,3 +2343,7 @@ onSnapshot(
 
 /* ---------- Init ---------- */
 renderSkeleton();
+console.log("✅ App v4.0 fully initialized — all buttons ready");
+</script>
+</body>
+</html>
