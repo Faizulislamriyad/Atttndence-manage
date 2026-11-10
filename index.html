@@ -17,6 +17,7 @@
     --accent: #6366f1; --accent-hover: #4f46e5; --accent-soft: #eef2ff; --accent-text: #4338ca;
     --success: #10b981; --success-soft: #ecfdf5; --success-text: #047857;
     --danger: #ef4444; --danger-soft: #fef2f2; --danger-text: #b91c1c;
+    --warning: #f59e0b; --warning-soft: #fffbeb; --warning-text: #b45309;
     --shadow-xs: 0 1px 2px rgba(24,24,27,0.04);
     --shadow-sm: 0 1px 3px rgba(24,24,27,0.06), 0 1px 2px rgba(24,24,27,0.04);
     --shadow-md: 0 4px 12px rgba(24,24,27,0.06);
@@ -31,10 +32,9 @@
     --accent: #818cf8; --accent-hover: #6366f1; --accent-soft: #1e1b4b; --accent-text: #a5b4fc;
     --success: #34d399; --success-soft: #064e3b; --success-text: #6ee7b7;
     --danger: #f87171; --danger-soft: #450a0a; --danger-text: #fca5a5;
-    --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
+    --warning: #fbbf24; --warning-soft: #422006; --warning-text: #fcd34d;
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.3); --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.5); --shadow-lg: 0 12px 32px rgba(0,0,0,0.6);
     --shadow-xl: 0 24px 48px rgba(0,0,0,0.7);
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +54,7 @@
   .topbar {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: 12px 16px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--r-lg); box-shadow: var(--shadow-xs); margin-bottom: 20px;
+    border-radius: var(--r-lg); box-shadow: var(--shadow-xs); margin-bottom: 16px;
   }
   .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .brand-icon {
@@ -73,7 +73,85 @@
   .icon-btn:hover { background: var(--bg-soft); color: var(--text); border-color: var(--border-strong); }
   .icon-btn:active { transform: scale(0.94); }
 
-  .search-wrap { position: relative; margin-bottom: 20px; }
+  /* ============ Action box ============ */
+  .action-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+  }
+  .action-btn {
+    display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    cursor: pointer; font-family: inherit; color: var(--text); text-align: left;
+    transition: all .18s ease; box-shadow: var(--shadow-xs);
+  }
+  .action-btn:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .action-btn:active { transform: scale(.99); }
+  .action-btn > i {
+    width: 36px; height: 36px; border-radius: 9px;
+    display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent); font-size: 15px;
+    flex-shrink: 0;
+  }
+  .action-btn > div { min-width: 0; }
+  .action-btn strong { display: block; font-weight: 500; font-size: .9rem; line-height: 1.2; }
+  .action-btn small { display: block; font-size: .72rem; color: var(--muted); margin-top: 2px; }
+  @media (max-width: 480px) { .action-box { grid-template-columns: 1fr; } }
+
+  /* ============ Overview section ============ */
+  .overview-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); padding: 16px; margin-bottom: 16px;
+    box-shadow: var(--shadow-xs);
+  }
+  .overview-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .overview-head h2 {
+    font-size: .95rem; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .overview-head h2 i { color: var(--accent); font-size: 13px; }
+  .overview-filters {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+  }
+  .overview-filters .input { font-size: .85rem; padding: 9px 12px; }
+  @media (max-width: 480px) {
+    .overview-filters { grid-template-columns: 1fr; }
+  }
+  .overview-session-head {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .overview-session-head h3 { font-size: .95rem; font-weight: 500; }
+  .overview-counts {
+    margin-left: auto; font-size: .78rem; color: var(--muted);
+    display: flex; gap: 10px;
+  }
+  .overview-counts .present { color: var(--success-text); font-weight: 500; }
+  .overview-counts .absent { color: var(--danger-text); font-weight: 500; }
+  .overview-list {
+    display: flex; flex-direction: column; gap: 6px; max-height: 320px;
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  .overview-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; background: var(--bg-soft); border-radius: 8px;
+    border: 1px solid var(--border); font-size: .84rem;
+  }
+  .overview-row .avatar { width: 30px; height: 30px; border-radius: 8px; font-size: 11px; }
+  .overview-row strong {
+    font-weight: 500; flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .overview-row small { color: var(--muted); font-size: .72rem; flex-shrink: 0; }
+  .overview-empty {
+    text-align: center; padding: 24px 12px; color: var(--muted); font-size: .85rem;
+  }
+  .overview-empty i { display: block; font-size: 24px; margin-bottom: 8px; opacity: .4; }
+
+  /* ============ Search ============ */
+  .search-wrap { position: relative; margin-bottom: 16px; }
   .search-wrap .fa-magnifying-glass {
     position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
     color: var(--muted); font-size: 14px; pointer-events: none;
@@ -114,10 +192,7 @@
     position: relative; overflow: hidden;
   }
   .avatar > span { position: relative; z-index: 0; }
-  .avatar > img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: 1;
-  }
+  .avatar > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 
   .card-body { flex: 1; min-width: 0; }
   .card-name {
@@ -201,14 +276,21 @@
 
   .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
   .field label { font-size: .8rem; color: var(--text-2); font-weight: 400; }
-  .input {
+  .input, select.input {
     width: 100%; min-width: 0; padding: 11px 14px; background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text);
     font-size: 15px; font-family: inherit; font-weight: 400; outline: none; transition: all .18s ease;
   }
+  select.input { cursor: pointer; -webkit-appearance: none; appearance: none; padding-right: 36px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  [data-theme="dark"] select.input {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2.2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+  }
   .input::placeholder { color: var(--muted); }
-  .input:hover { border-color: var(--border-strong); }
-  .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .input:hover, select.input:hover { border-color: var(--border-strong); }
+  .input:focus, select.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .input.invalid { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
   .field-error { font-size: .76rem; color: var(--danger-text); display: none; font-weight: 400; }
   .field-error.show { display: block; }
@@ -272,14 +354,21 @@
   }
   .panel-tabs::-webkit-scrollbar { display: none; }
   .panel-tab {
-    flex: 1; min-width: 76px; padding: 9px 10px; border-radius: 6px; border: none;
-    background: transparent; color: var(--text-3); font-family: inherit; font-size: .8rem;
+    flex: 1; min-width: 68px; padding: 9px 8px; border-radius: 6px; border: none;
+    background: transparent; color: var(--text-3); font-family: inherit; font-size: .78rem;
     font-weight: 400; cursor: pointer; display: flex; flex-direction: column;
-    align-items: center; gap: 4px; transition: all .15s; white-space: nowrap;
+    align-items: center; gap: 4px; transition: all .15s; white-space: nowrap; position: relative;
   }
-  .panel-tab i { font-size: 14px; }
+  .panel-tab i { font-size: 13px; }
   .panel-tab:hover { background: var(--bg-soft); color: var(--text-2); }
   .panel-tab.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
+  .tab-badge {
+    position: absolute; top: 2px; right: 2px;
+    background: var(--danger); color: #fff; font-size: .62rem;
+    padding: 1px 5px; border-radius: 999px; font-weight: 500;
+    min-width: 16px; text-align: center; line-height: 1.3;
+  }
+  .panel-tab.active .tab-badge { background: #fff; color: var(--accent); }
 
   .section {
     background: var(--surface); border: 1px solid var(--border);
@@ -318,6 +407,52 @@
   .admin-row-body small { font-size: .76rem; color: var(--muted); display: block; margin-top: 1px; }
   .admin-row-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
+  /* Pending cards */
+  .pending-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 12px; margin-bottom: 10px;
+    animation: cardIn .25s ease;
+  }
+  .pending-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  .pending-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: .7rem; padding: 3px 9px; border-radius: 999px;
+    font-weight: 500; white-space: nowrap;
+  }
+  .pending-badge.info { background: var(--warning-soft); color: var(--warning-text); }
+  .pending-badge.attendance { background: var(--accent-soft); color: var(--accent-text); }
+  .pending-badge i { font-size: 10px; }
+  .pending-time { margin-left: auto; font-size: .72rem; color: var(--muted); }
+  .pending-body {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+  .pending-thumb {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg-soft); border: 1px solid var(--border);
+    display: grid; place-items: center; color: var(--muted); font-size: 16px;
+    flex-shrink: 0; background-size: cover; background-position: center; overflow: hidden;
+  }
+  .pending-body .grow { flex: 1; min-width: 0; }
+  .pending-body strong { font-weight: 500; font-size: .9rem; display: block; }
+  .pending-body small { color: var(--muted); font-size: .76rem; display: block; margin-top: 1px; }
+  .pending-actions { display: flex; gap: 6px; }
+  .pending-btn {
+    flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-family: inherit;
+    font-size: .8rem; font-weight: 500; color: var(--text-2);
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all .15s;
+  }
+  .pending-btn i { font-size: 11px; }
+  .pending-btn:disabled { opacity: .55; cursor: not-allowed; }
+  .pending-btn.approve { color: var(--success-text); border-color: var(--border); }
+  .pending-btn.approve:hover:not(:disabled) { background: var(--success-soft); border-color: var(--success); }
+  .pending-btn.reject { color: var(--danger-text); border-color: var(--border); }
+  .pending-btn.reject:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); }
+
+  /* Session list */
   .session-stats {
     display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px;
     font-size: .76rem; color: var(--text-3);
@@ -341,17 +476,10 @@
     animation: cardIn .25s ease backwards;
   }
   .student-row:hover { border-color: var(--border-strong); }
-  .student-row.is-present {
-    background: rgba(16, 185, 129, 0.06);
-    border-color: rgba(16, 185, 129, 0.35);
-  }
-  .student-row.is-absent {
-    background: rgba(239, 68, 68, 0.06);
-    border-color: rgba(239, 68, 68, 0.35);
-  }
+  .student-row.is-present { background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.35); }
+  .student-row.is-absent { background: rgba(239, 68, 68, 0.06); border-color: rgba(239, 68, 68, 0.35); }
   [data-theme="dark"] .student-row.is-present { background: rgba(52, 211, 153, 0.09); border-color: rgba(52, 211, 153, 0.3); }
   [data-theme="dark"] .student-row.is-absent { background: rgba(248, 113, 113, 0.09); border-color: rgba(248, 113, 113, 0.3); }
-
   .student-row .avatar { width: 40px; height: 40px; border-radius: 10px; font-size: 13px; }
   .student-row-body { flex: 1; min-width: 0; }
   .student-row-body h4 {
@@ -375,6 +503,7 @@
   .mark-btn.absent.active:hover:not(:disabled) { background: #dc2626; }
   .mark-btn.present.active:hover:not(:disabled) { background: #059669; }
 
+  /* Activity */
   .activity { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
   .activity-item {
     display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -390,33 +519,18 @@
   }
   .activity-item .time { font-size: .72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 
-  /* ============ TOAST (fixed visibility logic) ============ */
+  /* Toast */
   .toast {
-    position: fixed;
-    left: 50%;
-    bottom: calc(88px + env(safe-area-inset-bottom));
-    transform: translate(-50%, 12px);
-    opacity: 0;
-    visibility: hidden;
-    background: #18181b;
-    color: #fafafa;
-    padding: 12px 20px;
-    border-radius: var(--r);
-    font-size: .86rem;
-    font-weight: 400;
-    box-shadow: var(--shadow-xl);
-    z-index: 500;
-    max-width: calc(100vw - 40px);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom));
+    transform: translate(-50%, 12px); opacity: 0; visibility: hidden;
+    background: #18181b; color: #fafafa; padding: 12px 20px; border-radius: var(--r);
+    font-size: .86rem; font-weight: 400; box-shadow: var(--shadow-xl); z-index: 500;
+    max-width: calc(100vw - 40px); display: flex; align-items: center; gap: 10px;
     pointer-events: none;
     transition: opacity .22s ease, transform .3s cubic-bezier(.2,.9,.3,1.3), visibility 0s .3s;
   }
   .toast.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, 0);
+    opacity: 1; visibility: visible; transform: translate(-50%, 0);
     transition: opacity .22s ease, transform .3s cubic-bezier(.2,.9,.3,1.3), visibility 0s;
   }
   .toast i { font-size: 14px; }
@@ -424,6 +538,7 @@
   .toast.error { background: #991b1b; }
   .toast.info { background: #1e40af; }
 
+  /* Modal */
   .modal { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; padding: 20px; }
   .modal-backdrop {
     position: absolute; inset: 0; background: rgba(9,9,11,0.55);
@@ -439,6 +554,37 @@
   .modal-dialog p { font-size: .86rem; color: var(--text-2); line-height: 1.55; margin-bottom: 20px; }
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
+  /* Full-size form modal (for attendance request / upload info) */
+  .form-dialog {
+    position: relative; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); max-width: 460px; width: 100%; max-height: 90vh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: var(--shadow-xl); animation: modalIn .22s ease;
+  }
+  .form-header {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 20px 20px 14px; border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .form-header-icon {
+    width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: grid; place-items: center; color: #fff; font-size: 18px;
+    box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+  }
+  .form-header h2 { font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
+  .form-header p { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .form-header .close-btn {
+    margin-left: auto;
+    background: transparent; border: none; color: var(--text-3);
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+    display: grid; place-items: center; font-size: 14px; flex-shrink: 0;
+    transition: all .15s; font-family: inherit;
+  }
+  .form-header .close-btn:hover { background: var(--bg-soft); color: var(--text); }
+  .form-body { padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Student detail */
   .detail-dialog {
     position: relative; background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-lg); max-width: 480px; width: 100%; max-height: 85vh;
@@ -452,7 +598,6 @@
     display: grid; place-items: center; font-size: 13px; transition: all .15s;
   }
   .detail-close:hover { background: var(--bg-soft); color: var(--text); }
-
   .detail-hero {
     padding: 28px 20px 20px; text-align: center;
     border-bottom: 1px solid var(--border);
@@ -461,37 +606,23 @@
   }
   .detail-hero .avatar {
     width: 76px; height: 76px; border-radius: 20px;
-    margin: 0 auto 14px; font-size: 24px;
-    box-shadow: var(--shadow-md);
+    margin: 0 auto 14px; font-size: 24px; box-shadow: var(--shadow-md);
   }
   .detail-hero h2 { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 3px; }
   .detail-hero > p { font-size: .84rem; color: var(--muted); }
-  .detail-stats {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px;
-  }
+  .detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
   .detail-stats > div {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--r-sm); padding: 10px 6px; text-align: center;
   }
-  .detail-stats b {
-    display: block; font-size: 1.15rem; font-weight: 500;
-    color: var(--text); line-height: 1.1;
-  }
-  .detail-stats span {
-    font-size: .66rem; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .05em;
-    display: block; margin-top: 3px;
-  }
+  .detail-stats b { display: block; font-size: 1.15rem; font-weight: 500; color: var(--text); line-height: 1.1; }
+  .detail-stats span { font-size: .66rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; display: block; margin-top: 3px; }
   .detail-body {
     padding: 18px 20px 20px; overflow-y: auto; flex: 1;
     -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
   }
-  .detail-body h3 {
-    font-size: .85rem; font-weight: 500; margin-bottom: 12px; color: var(--text-2);
-    display: flex; align-items: center; gap: 6px;
-  }
+  .detail-body h3 { font-size: .85rem; font-weight: 500; margin-bottom: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; }
   .detail-body h3 i { color: var(--accent); font-size: 12px; }
-
   .detail-date-group { margin-bottom: 14px; }
   .detail-date-head {
     display: flex; align-items: center; gap: 8px;
@@ -500,31 +631,24 @@
   }
   .detail-date-head i { color: var(--accent); font-size: 11px; }
   .detail-date-head strong { font-weight: 500; }
-  .detail-date-head .count {
-    margin-left: auto; color: var(--muted); font-size: .7rem;
-  }
+  .detail-date-head .count { margin-left: auto; color: var(--muted); font-size: .7rem; }
   .detail-subject-row {
     display: flex; align-items: center; gap: 10px;
     padding: 7px 10px; background: var(--bg-soft); border-radius: 6px;
     font-size: .82rem; color: var(--text-2); margin-bottom: 4px;
   }
   .detail-subject-row i { color: var(--success); font-size: 11px; }
-
-  .detail-empty {
-    text-align: center; padding: 32px 16px; color: var(--muted); font-size: .85rem;
-  }
-  .detail-empty i {
-    display: block; font-size: 28px; margin-bottom: 10px; opacity: .4;
-  }
+  .detail-empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: .85rem; }
+  .detail-empty i { display: block; font-size: 28px; margin-bottom: 10px; opacity: .4; }
 
   @media (max-width: 640px) {
     body { padding: 12px 12px calc(96px + env(safe-area-inset-bottom)); font-size: 14px; }
-    .topbar { padding: 10px 12px; margin-bottom: 16px; border-radius: var(--r); }
+    .topbar { padding: 10px 12px; margin-bottom: 12px; border-radius: var(--r); }
     .brand-icon { width: 36px; height: 36px; font-size: 15px; }
     .brand h1 { font-size: .98rem; }
     .icon-btn { width: 36px; height: 36px; font-size: 14px; }
     .search-input { padding: 11px 40px 11px 40px; font-size: 16px; }
-    .search-wrap { margin-bottom: 14px; }
+    .search-wrap { margin-bottom: 12px; }
     .grid { grid-template-columns: 1fr; gap: 10px; }
     .student-card { padding: 14px; gap: 12px; }
     .avatar { width: 46px; height: 46px; border-radius: 12px; font-size: 14px; }
@@ -535,13 +659,14 @@
     .panel-body { padding: 16px; }
     .panel-header { padding: 14px 16px; }
     .section { padding: 14px; }
-    .input, .search-input { font-size: 16px; }
+    .input, select.input, .search-input { font-size: 16px; }
     .toast { bottom: calc(80px + env(safe-area-inset-bottom)); padding: 11px 16px; font-size: .82rem; }
     .student-row { padding: 8px 10px; gap: 10px; }
     .student-row .avatar { width: 36px; height: 36px; font-size: 12px; }
     .mark-btn { width: 38px; height: 38px; font-size: 14px; }
     .detail-dialog { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 90vh; border-bottom: none; }
-    #studentDetail.modal { align-items: end; padding: 0; }
+    #studentDetail.modal, #infoModal.modal { align-items: end; padding: 0; }
+    .form-dialog { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 92vh; border-bottom: none; }
     .detail-hero { padding: 24px 16px 16px; }
     .detail-hero .avatar { width: 68px; height: 68px; border-radius: 18px; font-size: 22px; }
     .detail-body { padding: 16px; }
@@ -549,9 +674,12 @@
     .admin-row .avatar { width: 34px; height: 34px; font-size: 12px; }
     .signed-bar { padding: 10px 12px; }
     .signed-info span { font-size: .78rem; }
+    .action-btn { padding: 12px 14px; }
+    .action-btn > i { width: 32px; height: 32px; font-size: 13px; }
+    .action-btn strong { font-size: .86rem; }
   }
   @media (max-width: 380px) {
-    .panel-tab { min-width: 60px; font-size: .72rem; padding: 8px 4px; }
+    .panel-tab { min-width: 58px; font-size: .7rem; padding: 8px 4px; }
     .panel-tab i { font-size: 12px; }
     .detail-stats b { font-size: 1rem; }
     .detail-stats span { font-size: .6rem; }
@@ -559,7 +687,7 @@
   }
   @keyframes sheetIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
   @media (max-width: 640px) {
-    .detail-dialog { animation: sheetIn .25s cubic-bezier(.2,.9,.3,1.05); }
+    .detail-dialog, .form-dialog { animation: sheetIn .25s cubic-bezier(.2,.9,.3,1.05); }
   }
 </style>
 </head>
@@ -574,6 +702,41 @@
     <button id="themeBtn" class="icon-btn" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
   </header>
 
+  <!-- Action box -->
+  <div class="action-box">
+    <button class="action-btn" id="btnAttendance">
+      <i class="fa-solid fa-calendar-check"></i>
+      <div>
+        <strong>Request Attendance</strong>
+        <small>Mark yourself present</small>
+      </div>
+    </button>
+    <button class="action-btn" id="btnUploadInfo">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <div>
+        <strong>Upload Info</strong>
+        <small>Register / update profile</small>
+      </div>
+    </button>
+  </div>
+
+  <!-- Attendance Overview -->
+  <section class="overview-card" id="overviewCard">
+    <div class="overview-head">
+      <h2><i class="fa-solid fa-chart-simple"></i> Attendance Overview</h2>
+    </div>
+    <div class="overview-filters">
+      <select id="ovDate" class="input" aria-label="Filter by date"></select>
+      <select id="ovSubject" class="input" aria-label="Filter by subject"></select>
+    </div>
+    <div id="overviewBody">
+      <div class="overview-empty">
+        <i class="fa-regular fa-calendar"></i>
+        No attendance sessions yet.
+      </div>
+    </div>
+  </section>
+
   <div class="search-wrap">
     <i class="fa-solid fa-magnifying-glass"></i>
     <input id="searchInput" type="search" class="search-input" placeholder="Search by name or roll..." autocomplete="off" />
@@ -585,6 +748,7 @@
 
 <button id="adminFab" class="fab" aria-label="Open admin panel"><i class="fa-solid fa-user-shield"></i></button>
 
+<!-- Admin panel -->
 <div id="adminPanel" class="panel hidden">
   <div class="panel-backdrop" data-close-panel></div>
   <aside class="panel-dialog" role="dialog" aria-modal="true">
@@ -633,6 +797,10 @@
       <nav class="panel-tabs">
         <button class="panel-tab active" data-ptab="add"><i class="fa-solid fa-user-plus"></i> Add</button>
         <button class="panel-tab" data-ptab="present"><i class="fa-solid fa-check"></i> Present</button>
+        <button class="panel-tab" data-ptab="pending">
+          <i class="fa-solid fa-bell"></i> Pending
+          <span class="tab-badge hidden" id="pendingBadge">0</span>
+        </button>
         <button class="panel-tab" data-ptab="manage"><i class="fa-solid fa-list"></i> Manage</button>
         <button class="panel-tab" data-ptab="activity"><i class="fa-solid fa-clock-rotate-left"></i> Activity</button>
       </nav>
@@ -697,11 +865,25 @@
         </div>
 
         <div id="sessionView" class="section hidden">
-          <div class="section-head">
-            <h3 id="sessionTitle">Session</h3>
-          </div>
+          <div class="section-head"><h3 id="sessionTitle">Session</h3></div>
           <div id="sessionStats" class="session-stats"></div>
           <div id="sessionList" class="session-list"></div>
+        </div>
+      </div>
+
+      <div class="ptab-view hidden" id="ptab-pending">
+        <div class="section">
+          <div class="section-head">
+            <h3>Pending Requests</h3>
+            <span id="pendingCount" style="font-size:.76rem;color:var(--muted);"></span>
+          </div>
+          <p class="hint">Approve or reject user submissions for info uploads and attendance requests.</p>
+          <div id="pendingList">
+            <div class="overview-empty" style="padding:32px 12px;">
+              <i class="fa-solid fa-inbox"></i>
+              No pending requests.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -732,8 +914,10 @@
   </aside>
 </div>
 
+<!-- Hidden file input for updating photos -->
 <input type="file" id="managePhotoInput" accept="image/*" hidden />
 
+<!-- Student detail modal -->
 <div id="studentDetail" class="modal hidden">
   <div class="modal-backdrop" data-close-detail></div>
   <div class="detail-dialog">
@@ -757,8 +941,98 @@
   </div>
 </div>
 
+<!-- Attendance request modal -->
+<div id="attendanceModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-attendance></div>
+  <div class="form-dialog">
+    <div class="form-header">
+      <div class="form-header-icon"><i class="fa-solid fa-calendar-check"></i></div>
+      <div>
+        <h2>Request Attendance</h2>
+        <p>Select a session and enter your roll number.</p>
+      </div>
+      <button class="close-btn" data-close-attendance aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-body">
+      <form id="attendanceReqForm" novalidate>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="reqDate">Date</label>
+          <select id="reqDate" class="input"></select>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="reqSubject">Subject</label>
+          <select id="reqSubject" class="input"></select>
+        </div>
+        <div class="field" style="margin-bottom:16px;">
+          <label for="reqRoll">Your Roll Number</label>
+          <input id="reqRoll" class="input" placeholder="e.g. 101" autocomplete="off" inputmode="numeric" />
+          <span class="field-error" data-error-for="reqRoll"></span>
+        </div>
+        <p class="hint" style="font-size:.76rem;margin-bottom:14px;">
+          <i class="fa-solid fa-circle-info"></i> Your request will be sent to the admin for approval.
+        </p>
+        <button type="submit" class="btn btn-primary btn-block" id="attendanceSubmitBtn">
+          <i class="fa-solid fa-paper-plane"></i> Send Request
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Upload info modal -->
+<div id="infoModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-info></div>
+  <div class="form-dialog">
+    <div class="form-header">
+      <div class="form-header-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+      <div>
+        <h2>Upload Info</h2>
+        <p>Register your profile or update existing info.</p>
+      </div>
+      <button class="close-btn" data-close-info aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="form-body">
+      <form id="infoForm" novalidate>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="infoName">Full Name</label>
+          <input id="infoName" class="input" placeholder="e.g. Rahim Uddin" autocomplete="off" />
+          <span class="field-error" data-error-for="infoName"></span>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label for="infoRoll">Roll Number</label>
+          <input id="infoRoll" class="input" placeholder="e.g. 101" autocomplete="off" inputmode="numeric" />
+          <span class="field-error" data-error-for="infoRoll"></span>
+        </div>
+        <div class="field" style="margin-bottom:16px;">
+          <label>Profile Photo (optional)</label>
+          <div class="photo-upload">
+            <div id="infoPhotoPreview" class="photo-preview"><i class="fa-solid fa-camera"></i></div>
+            <div class="photo-actions">
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0;">
+                <i class="fa-solid fa-upload"></i> Upload
+                <input type="file" id="infoPhotoInput" accept="image/*" hidden />
+              </label>
+              <button type="button" id="infoPhotoClear" class="btn btn-ghost btn-sm">
+                <i class="fa-solid fa-xmark"></i> Clear
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="hint" style="font-size:.76rem;margin-bottom:14px;">
+          <i class="fa-solid fa-circle-info"></i> If a student with this roll already exists, the admin's approval will update their info.
+        </p>
+        <button type="submit" class="btn btn-primary btn-block" id="infoSubmitBtn">
+          <i class="fa-solid fa-paper-plane"></i> Send Request
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
 <div id="toast" class="toast"><i class="fa-solid fa-circle-info"></i><span></span></div>
 
+<!-- Confirm modal -->
 <div id="confirmModal" class="modal hidden">
   <div class="modal-backdrop" data-close-confirm></div>
   <div class="modal-dialog">
@@ -774,7 +1048,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDocs,
+  getFirestore, collection, doc, addDoc, deleteDoc, updateDoc, getDoc, getDocs, setDoc,
   query, where, onSnapshot, orderBy, limit, serverTimestamp, runTransaction, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
@@ -796,6 +1070,8 @@ const auth = getAuth(app);
 const studentsCol = collection(db, "students");
 const logsCol = collection(db, "attendance_logs");
 const recordsCol = collection(db, "attendance_records");
+const pendingCol = collection(db, "pending_requests");
+const sessionsCol = collection(db, "sessions");
 
 const AUTHORIZED_EMAILS = ["mdriyadboss1234@gmail.com"];
 
@@ -822,12 +1098,8 @@ const avatarStyle = (name) => {
   return `background:linear-gradient(135deg,${a},${b})`;
 };
 function avatarHTML(name, photo, extraClass = "") {
-  const img = photo
-    ? `<img src="${esc(photo)}" alt="" loading="lazy" onerror="this.remove()">`
-    : "";
-  return `<div class="avatar ${extraClass}" style="${avatarStyle(name)}">
-    <span>${esc(initials(name))}</span>${img}
-  </div>`;
+  const img = photo ? `<img src="${esc(photo)}" alt="" loading="lazy" onerror="this.remove()">` : "";
+  return `<div class="avatar ${extraClass}" style="${avatarStyle(name)}"><span>${esc(initials(name))}</span>${img}</div>`;
 }
 
 function todayStr() {
@@ -847,23 +1119,20 @@ function formatTime(d) {
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
+function sanitizeSubject(s) {
+  return String(s || "").replace(/[.\[\]/*~`]/g, "_").trim();
+}
 
-/* ---------- Toast (robust hide) ---------- */
 let toastTimer = null;
 function toast(msg, type = "info") {
   const el = $("toast");
   const icons = { success: "fa-circle-check", error: "fa-circle-exclamation", info: "fa-circle-info" };
-  // reset class first so re-trigger animates cleanly
   el.classList.remove("show");
-  // force reflow so transition re-runs
   void el.offsetWidth;
   el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${esc(msg)}</span>`;
   el.className = "toast show " + type;
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    el.classList.remove("show");
-    toastTimer = null;
-  }, 3000);
+  toastTimer = setTimeout(() => { el.classList.remove("show"); toastTimer = null; }, 3000);
 }
 
 function fbError(err) {
@@ -894,9 +1163,7 @@ const themeColorMeta = $("themeColorMeta");
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem("ca_theme", theme);
-  themeBtn.innerHTML = theme === "dark"
-    ? '<i class="fa-solid fa-sun"></i>'
-    : '<i class="fa-solid fa-moon"></i>';
+  themeBtn.innerHTML = theme === "dark" ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
   themeColorMeta.setAttribute("content", theme === "dark" ? "#09090b" : "#fafafa");
 }
 applyTheme(localStorage.getItem("ca_theme") || "light");
@@ -914,6 +1181,7 @@ function clearErrors(scope) {
   scope.querySelectorAll(".field-error").forEach(e => { e.textContent = ""; e.classList.remove("show"); });
   scope.querySelectorAll(".input.invalid").forEach(e => e.classList.remove("invalid"));
 }
+
 const validateName = (v) => {
   const s = String(v||"").trim();
   if (!s) return "Name is required";
@@ -925,8 +1193,8 @@ const validateRoll = (v) => {
   const s = String(v||"").trim();
   if (!s) return "Roll is required";
   if (s.length > 30) return "Roll too long";
-  if (/\s/.test(s)) return "Roll cannot contain spaces";
-  if (s.includes("/")) return "Roll cannot contain '/'";
+  if (/\s/.test(s)) return "No spaces allowed";
+  if (s.includes("/")) return "No '/' allowed";
   return "";
 };
 const validateEmail = (v) => {
@@ -1007,7 +1275,6 @@ function renderStudents() {
   if (!initialLoaded) { renderSkeleton(); return; }
   const sorted = [...students].sort((a, b) =>
     String(a.roll||"").localeCompare(String(b.roll||""), undefined, { numeric: true }));
-
   const term = searchQuery.trim().toLowerCase();
   const list = term
     ? sorted.filter(s => String(s.name||"").toLowerCase().includes(term) || String(s.roll||"").toLowerCase().includes(term))
@@ -1080,6 +1347,648 @@ function renderSubjectOptions() {
   $("subjectList").innerHTML = [...set].sort().map(k => `<option value="${esc(k)}"></option>`).join("");
 }
 
+/* ==========================================================
+   SESSIONS — used by public dropdowns & admin present
+   ========================================================== */
+let sessions = []; // { id, date, subject, updatedAt }
+
+onSnapshot(
+  query(sessionsCol, orderBy("date", "desc"), limit(200)),
+  (snap) => {
+    sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    renderOverviewFilters();
+    renderRequestDropdowns();
+  },
+  (err) => {
+    console.warn("Sessions snapshot:", err);
+  }
+);
+
+/* ==========================================================
+   ATTENDANCE OVERVIEW (public section above search)
+   ========================================================== */
+let overviewUnsub = null;
+let ovSelectedDate = "";
+let ovSelectedSubject = "";
+
+function renderOverviewFilters() {
+  const dateSel = $("ovDate");
+  const subSel = $("ovSubject");
+
+  const uniqueDates = [...new Set(sessions.map(s => s.date))].filter(Boolean).sort((a, b) => b.localeCompare(a));
+
+  if (!uniqueDates.length) {
+    dateSel.innerHTML = `<option value="">No sessions yet</option>`;
+    subSel.innerHTML = `<option value="">—</option>`;
+    $("overviewBody").innerHTML = `
+      <div class="overview-empty">
+        <i class="fa-regular fa-calendar"></i>
+        No attendance sessions yet.
+      </div>`;
+    if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
+    return;
+  }
+
+  // Preserve current selection if still valid
+  if (!dateSel.value || !uniqueDates.includes(dateSel.value)) {
+    dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
+    ovSelectedDate = uniqueDates[0];
+    dateSel.value = ovSelectedDate;
+  } else {
+    dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
+    dateSel.value = ovSelectedDate;
+  }
+
+  renderOverviewSubjects();
+}
+
+function renderOverviewSubjects() {
+  const date = $("ovDate").value;
+  const subSel = $("ovSubject");
+  const subjectsForDate = [...new Set(sessions.filter(s => s.date === date).map(s => s.subject))].sort();
+
+  if (!subjectsForDate.length) {
+    subSel.innerHTML = `<option value="">—</option>`;
+    $("overviewBody").innerHTML = `
+      <div class="overview-empty">
+        <i class="fa-regular fa-calendar-xmark"></i>
+        No sessions on this date.
+      </div>`;
+    if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
+    return;
+  }
+
+  if (!subSel.value || !subjectsForDate.includes(subSel.value)) {
+    subSel.innerHTML = subjectsForDate.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    ovSelectedSubject = subjectsForDate[0];
+    subSel.value = ovSelectedSubject;
+  } else {
+    subSel.innerHTML = subjectsForDate.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+    subSel.value = ovSelectedSubject;
+  }
+}
+
+function updateOverview() {
+  if (overviewUnsub) { overviewUnsub(); overviewUnsub = null; }
+  const date = $("ovDate").value;
+  const subject = $("ovSubject").value;
+  if (!date || !subject) {
+    $("overviewBody").innerHTML = `<div class="overview-empty"><i class="fa-regular fa-calendar"></i>Select a date and subject.</div>`;
+    return;
+  }
+  $("overviewBody").innerHTML = `<div class="overview-empty"><i class="fa-solid fa-spinner fa-spin"></i>Loading...</div>`;
+
+  overviewUnsub = onSnapshot(
+    query(recordsCol, where("date", "==", date), where("subject", "==", subject)),
+    (snap) => {
+      const allRecords = snap.docs.map(d => d.data());
+      const presents = allRecords.filter(r => r.status === "present");
+      const absents = allRecords.filter(r => r.status === "absent");
+      const totalStudents = students.length;
+
+      if (!allRecords.length) {
+        $("overviewBody").innerHTML = `
+          <div class="overview-empty">
+            <i class="fa-regular fa-calendar"></i>
+            No attendance marked yet for this session.
+          </div>`;
+        return;
+      }
+
+      if (!presents.length) {
+        $("overviewBody").innerHTML = `
+          <div class="overview-session-head">
+            <h3>${esc(subject)}</h3>
+            <span class="overview-counts">
+              <span class="absent">0 present</span>
+            </span>
+          </div>
+          <div class="overview-empty">
+            <i class="fa-solid fa-user-xmark"></i>
+            No students marked present.
+          </div>`;
+        return;
+      }
+
+      const sorted = [...presents].sort((a, b) =>
+        String(a.studentRoll||"").localeCompare(String(b.studentRoll||""), undefined, { numeric: true }));
+
+      $("overviewBody").innerHTML = `
+        <div class="overview-session-head">
+          <h3>${esc(subject)} · ${esc(formatDate(date))}</h3>
+          <span class="overview-counts">
+            <span class="present">${presents.length} present</span>
+            ${absents.length ? `<span class="absent">${absents.length} absent</span>` : ""}
+          </span>
+        </div>
+        <div class="overview-list">
+          ${sorted.map(r => `
+            <div class="overview-row">
+              ${avatarHTML(r.studentName || "?", "")}
+              <strong>${esc(r.studentName || "?")}</strong>
+              <small>Roll ${esc(r.studentRoll || "-")}</small>
+            </div>
+          `).join("")}
+        </div>`;
+    },
+    (err) => {
+      console.error(err);
+      $("overviewBody").innerHTML = `
+        <div class="overview-empty">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          ${esc(fbError(err))}
+        </div>`;
+    }
+  );
+}
+
+$("ovDate").addEventListener("change", () => {
+  ovSelectedDate = $("ovDate").value;
+  renderOverviewSubjects();
+  updateOverview();
+});
+$("ovSubject").addEventListener("change", () => {
+  ovSelectedSubject = $("ovSubject").value;
+  updateOverview();
+});
+
+/* ==========================================================
+   PUBLIC: Attendance request modal
+   ========================================================== */
+function renderRequestDropdowns() {
+  const dateSel = $("reqDate");
+  const subSel = $("reqSubject");
+  const uniqueDates = [...new Set(sessions.map(s => s.date))].filter(Boolean).sort((a, b) => b.localeCompare(a));
+
+  if (!uniqueDates.length) {
+    dateSel.innerHTML = `<option value="">No sessions yet</option>`;
+    subSel.innerHTML = `<option value="">—</option>`;
+    return;
+  }
+
+  const prevDate = dateSel.value;
+  dateSel.innerHTML = uniqueDates.map(d => `<option value="${esc(d)}">${esc(formatDate(d))}</option>`).join("");
+  dateSel.value = uniqueDates.includes(prevDate) ? prevDate : uniqueDates[0];
+
+  const date = dateSel.value;
+  const subjectsForDate = [...new Set(sessions.filter(s => s.date === date).map(s => s.subject))].sort();
+  const prevSub = subSel.value;
+  subSel.innerHTML = subjectsForDate.length
+    ? subjectsForDate.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join("")
+    : `<option value="">—</option>`;
+  subSel.value = subjectsForDate.includes(prevSub) ? prevSub : (subjectsForDate[0] || "");
+}
+
+$("reqDate").addEventListener("change", renderRequestDropdowns);
+
+$("btnAttendance").addEventListener("click", () => {
+  $("attendanceModal").classList.remove("hidden");
+  document.body.classList.add("lock");
+  renderRequestDropdowns();
+});
+$("btnUploadInfo").addEventListener("click", () => {
+  $("infoModal").classList.remove("hidden");
+  document.body.classList.add("lock");
+});
+document.querySelectorAll("[data-close-attendance]").forEach(el =>
+  el.addEventListener("click", () => {
+    $("attendanceModal").classList.add("hidden");
+    document.body.classList.remove("lock");
+  }));
+document.querySelectorAll("[data-close-info]").forEach(el =>
+  el.addEventListener("click", () => {
+    $("infoModal").classList.add("hidden");
+    document.body.classList.remove("lock");
+  }));
+
+/* Attendance request form */
+$("attendanceReqForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  clearErrors(form);
+
+  const date = $("reqDate").value;
+  const subject = $("reqSubject").value;
+  const roll = $("reqRoll").value.trim();
+
+  if (!date) { toast("Please select a date", "error"); return; }
+  if (!subject) { toast("Please select a subject", "error"); return; }
+  const rollErr = validateRoll(roll);
+  if (rollErr) { setFieldError("reqRoll", rollErr); return; }
+
+  // Verify roll exists
+  try {
+    const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+    if (snap.empty) {
+      setFieldError("reqRoll", `No student with roll "${roll}". Upload your info first.`);
+      return;
+    }
+  } catch (err) {
+    console.error(err);
+    toast(fbError(err), "error");
+    return;
+  }
+
+  const btn = $("attendanceSubmitBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  try {
+    await addDoc(pendingCol, {
+      type: "attendance",
+      roll,
+      date,
+      subject: sanitizeSubject(subject),
+      originalSubject: subject,
+      submittedAt: serverTimestamp(),
+      createdAt: serverTimestamp()
+    });
+    form.reset();
+    $("attendanceModal").classList.add("hidden");
+    document.body.classList.remove("lock");
+    toast("Request sent! Admin will review it shortly.", "success");
+  } catch (err) {
+    console.error(err);
+    toast(fbError(err), "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request';
+  }
+});
+
+/* Info upload form */
+let infoPhotoData = "";
+const infoPhotoInput = $("infoPhotoInput");
+const infoPhotoPreview = $("infoPhotoPreview");
+
+function updateInfoPhotoPreview() {
+  if (infoPhotoData) {
+    infoPhotoPreview.style.backgroundImage = `url(${infoPhotoData})`;
+    infoPhotoPreview.classList.add("has-image");
+    infoPhotoPreview.innerHTML = "";
+  } else {
+    infoPhotoPreview.style.backgroundImage = "";
+    infoPhotoPreview.classList.remove("has-image");
+    infoPhotoPreview.innerHTML = '<i class="fa-solid fa-camera"></i>';
+  }
+}
+infoPhotoInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    infoPhotoData = await processImage(file);
+    updateInfoPhotoPreview();
+  } catch (err) {
+    toast(err.message, "error");
+    e.target.value = "";
+  }
+});
+$("infoPhotoClear").addEventListener("click", () => {
+  infoPhotoData = ""; infoPhotoInput.value = ""; updateInfoPhotoPreview();
+});
+
+$("infoForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  clearErrors(form);
+
+  const name = $("infoName").value.trim();
+  const roll = $("infoRoll").value.trim();
+
+  const nameErr = validateName(name);
+  const rollErr = validateRoll(roll);
+  if (nameErr) setFieldError("infoName", nameErr);
+  if (rollErr) setFieldError("infoRoll", rollErr);
+  if (nameErr || rollErr) return;
+
+  const btn = $("infoSubmitBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  try {
+    await addDoc(pendingCol, {
+      type: "info",
+      name,
+      roll,
+      photo: infoPhotoData || "",
+      submittedAt: serverTimestamp(),
+      createdAt: serverTimestamp()
+    });
+    form.reset();
+    infoPhotoData = ""; infoPhotoInput.value = ""; updateInfoPhotoPreview();
+    $("infoModal").classList.add("hidden");
+    document.body.classList.remove("lock");
+    toast("Info sent! Admin will review it shortly.", "success");
+  } catch (err) {
+    console.error(err);
+    toast(fbError(err), "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Request';
+  }
+});
+
+/* ==========================================================
+   ADMIN: Pending requests
+   ========================================================== */
+let pendingRequests = [];
+let pendingUnsub = null;
+
+onSnapshot(
+  query(pendingCol, orderBy("createdAt", "desc"), limit(50)),
+  (snap) => {
+    pendingRequests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderPendingList();
+    updatePendingBadge();
+  },
+  (err) => {
+    console.error("Pending snapshot:", err);
+  }
+);
+
+function updatePendingBadge() {
+  const badge = $("pendingBadge");
+  const count = pendingRequests.length;
+  if (count > 0) {
+    badge.textContent = count > 99 ? "99+" : count;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+}
+
+function renderPendingList() {
+  const el = $("pendingList");
+  const countEl = $("pendingCount");
+  if (!el) return;
+
+  countEl.textContent = pendingRequests.length
+    ? `${pendingRequests.length} request${pendingRequests.length > 1 ? "s" : ""}`
+    : "";
+
+  if (!pendingRequests.length) {
+    el.innerHTML = `
+      <div class="overview-empty" style="padding:32px 12px;">
+        <i class="fa-solid fa-inbox"></i>
+        No pending requests.
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = pendingRequests.map(r => {
+    const isInfo = r.type === "info";
+    const badgeClass = isInfo ? "info" : "attendance";
+    const badgeIcon = isInfo ? "fa-id-card" : "fa-calendar-check";
+    const badgeLabel = isInfo ? "Info Upload" : "Attendance";
+    const t = r.submittedAt?.toDate ? r.submittedAt.toDate() : (r.createdAt?.toDate ? r.createdAt.toDate() : null);
+    const timeStr = t ? formatTime(t) : "just now";
+
+    let bodyHTML = "";
+    if (isInfo) {
+      const thumbInner = r.photo
+        ? `<img src="${esc(r.photo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.remove()">`
+        : `<i class="fa-solid fa-user"></i>`;
+      bodyHTML = `
+        <div class="pending-thumb">${thumbInner}</div>
+        <div class="grow">
+          <strong>${esc(r.name || "(no name)")}</strong>
+          <small>Roll ${esc(r.roll || "-")}</small>
+        </div>`;
+    } else {
+      bodyHTML = `
+        <div class="pending-thumb"><i class="fa-solid fa-user-check"></i></div>
+        <div class="grow">
+          <strong>Roll ${esc(r.roll || "-")}</strong>
+          <small>${esc(r.originalSubject || r.subject || "-")} · ${esc(formatDate(r.date || ""))}</small>
+        </div>`;
+    }
+
+    return `
+      <div class="pending-item" data-id="${esc(r.id)}">
+        <div class="pending-head">
+          <span class="pending-badge ${badgeClass}">
+            <i class="fa-solid ${badgeIcon}"></i> ${badgeLabel}
+          </span>
+          <span class="pending-time">${esc(timeStr)}</span>
+        </div>
+        <div class="pending-body">${bodyHTML}</div>
+        <div class="pending-actions">
+          <button class="pending-btn reject" data-reject="${esc(r.id)}">
+            <i class="fa-solid fa-xmark"></i> Reject
+          </button>
+          <button class="pending-btn approve" data-approve="${esc(r.id)}">
+            <i class="fa-solid fa-check"></i> Approve
+          </button>
+        </div>
+      </div>`;
+  }).join("");
+
+  el.querySelectorAll("[data-approve]").forEach(btn => {
+    btn.addEventListener("click", () => approveRequest(btn.dataset.approve, btn));
+  });
+  el.querySelectorAll("[data-reject]").forEach(btn => {
+    btn.addEventListener("click", () => rejectRequest(btn.dataset.reject, btn));
+  });
+}
+
+async function rejectRequest(requestId, btn) {
+  if (btn.disabled) return;
+  const item = btn.closest(".pending-item");
+  const buttons = item.querySelectorAll(".pending-btn");
+  buttons.forEach(b => b.disabled = true);
+  try {
+    await deleteDoc(doc(pendingCol, requestId));
+    toast("Request rejected", "info");
+  } catch (err) {
+    console.error(err);
+    toast(fbError(err), "error");
+    buttons.forEach(b => b.disabled = false);
+  }
+}
+
+async function approveRequest(requestId, btn) {
+  if (btn.disabled) return;
+  const req = pendingRequests.find(p => p.id === requestId);
+  if (!req) return;
+
+  const item = btn.closest(".pending-item");
+  const buttons = item.querySelectorAll(".pending-btn");
+  buttons.forEach(b => b.disabled = true);
+  const oldHTML = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    let result;
+    if (req.type === "info") {
+      result = await approveInfoRequest(req);
+    } else if (req.type === "attendance") {
+      result = await approveAttendanceRequest(req);
+    } else {
+      throw new Error("Unknown request type");
+    }
+
+    // Delete the pending request
+    await deleteDoc(doc(pendingCol, requestId));
+
+    if (result?.message) {
+      toast(result.message, "success");
+    } else {
+      toast("Request approved", "success");
+    }
+  } catch (err) {
+    console.error(err);
+    toast(fbError(err), "error");
+    buttons.forEach(b => b.disabled = false);
+    btn.innerHTML = oldHTML;
+  }
+}
+
+async function approveInfoRequest(req) {
+  const roll = String(req.roll || "").trim();
+  const name = String(req.name || "").trim();
+  if (!name || !roll) throw new Error("Missing name or roll");
+
+  const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+  if (!snap.empty) {
+    // Update existing student
+    const docRef = snap.docs[0].ref;
+    await updateDoc(docRef, {
+      name,
+      photo: req.photo || "",
+      updatedAt: serverTimestamp()
+    });
+    return { message: `Updated info for ${name} (Roll ${roll})` };
+  } else {
+    // Create new student
+    await addDoc(studentsCol, {
+      name,
+      roll,
+      photo: req.photo || "",
+      subjects: {},
+      totalPresent: 0,
+      createdAt: serverTimestamp()
+    });
+    return { message: `${name} added (Roll ${roll})` };
+  }
+}
+
+async function approveAttendanceRequest(req) {
+  const roll = String(req.roll || "").trim();
+  const date = String(req.date || "").trim();
+  const subject = String(req.originalSubject || req.subject || "").trim();
+  if (!roll || !date || !subject) throw new Error("Missing attendance data");
+
+  const snap = await getDocs(query(studentsCol, where("roll", "==", roll)));
+  if (snap.empty) throw new Error(`No student with roll "${roll}"`);
+
+  const studentDoc = snap.docs[0];
+  const studentId = studentDoc.id;
+  const studentName = studentDoc.data().name || roll;
+
+  // Check if already present
+  const sanitizedSubject = sanitizeSubject(subject);
+  const recordId = `${date}__${sanitizedSubject}__${studentId}`;
+  const recordSnap = await getDoc(doc(recordsCol, recordId));
+  if (recordSnap.exists() && recordSnap.data().status === "present") {
+    return { message: `${studentName} already marked present in ${subject}` };
+  }
+
+  await applyAttendanceMark(studentId, subject, date, "present");
+  return { message: `${studentName} marked present in ${subject}` };
+}
+
+/* ==========================================================
+   Shared attendance mark logic (used by admin present + pending approve)
+   Log ID == record ID → toggle-off automatically removes activity entry
+   ========================================================== */
+async function applyAttendanceMark(studentId, subject, date, newStatus) {
+  const sanitized = sanitizeSubject(subject);
+  const recordId = `${date}__${sanitized}__${studentId}`;
+  const recordRef = doc(recordsCol, recordId);
+  const logRef = doc(logsCol, recordId);
+  const studentRef = doc(db, "students", studentId);
+  const sessionRef = doc(sessionsCol, `${date}__${sanitized}`);
+
+  let wasPresent = false, isPresent = false;
+
+  await runTransaction(db, async (tx) => {
+    const recordSnap = await tx.get(recordRef);
+    const studentSnap = await tx.get(studentRef);
+    if (!studentSnap.exists()) throw new Error("Student not found");
+
+    const prevStatus = recordSnap.exists() ? recordSnap.data().status : null;
+    wasPresent = prevStatus === "present";
+
+    const sdata = studentSnap.data();
+    const currentTotal = Number(sdata.totalPresent) || 0;
+    const currentSubj = Number(sdata.subjects?.[sanitized]) || 0;
+
+    let finalStatus = newStatus;
+    let newTotal = currentTotal;
+    let newSubj = currentSubj;
+
+    if (prevStatus === newStatus) {
+      // Toggle off → delete record + log
+      tx.delete(recordRef);
+      tx.delete(logRef);
+      finalStatus = null;
+    } else {
+      tx.set(recordRef, {
+        studentId,
+        studentName: sdata.name || "",
+        studentRoll: sdata.roll || "",
+        date,
+        subject: sanitized,
+        status: newStatus,
+        markedAt: Date.now(),
+        markedBy: auth.currentUser?.email || ""
+      });
+      if (newStatus === "present") {
+        // Log with deterministic ID
+        tx.set(logRef, {
+          studentId,
+          name: sdata.name || "",
+          roll: sdata.roll || "",
+          subject: sanitized,
+          sessionDate: date,
+          markedBy: auth.currentUser?.email || "",
+          createdAt: serverTimestamp()
+        });
+      } else {
+        tx.delete(logRef);
+      }
+      // Ensure session index entry exists
+      tx.set(sessionRef, {
+        date,
+        subject: sanitized,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+    }
+
+    isPresent = finalStatus === "present";
+
+    if (isPresent && !wasPresent) { newTotal += 1; newSubj += 1; }
+    else if (!isPresent && wasPresent) {
+      newTotal = Math.max(0, newTotal - 1);
+      newSubj = Math.max(0, newSubj - 1);
+    }
+
+    if (newTotal !== currentTotal || newSubj !== currentSubj) {
+      tx.update(studentRef, {
+        totalPresent: newTotal,
+        [`subjects.${sanitized}`]: newSubj,
+        updatedAt: serverTimestamp()
+      });
+    }
+  });
+
+  return { wasPresent, isPresent };
+}
+
+/* ==========================================================
+   ADMIN PANEL — panel open/close, tabs, auth
+   ========================================================== */
 const adminPanel = $("adminPanel");
 const adminFab = $("adminFab");
 function openPanel() { adminPanel.classList.remove("hidden"); document.body.classList.add("lock"); }
@@ -1088,10 +1997,11 @@ adminFab.addEventListener("click", openPanel);
 $("panelClose").addEventListener("click", closePanel);
 document.querySelectorAll("[data-close-panel]").forEach(el => el.addEventListener("click", closePanel));
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    if (!$("studentDetail").classList.contains("hidden")) closeDetail();
-    else if (!adminPanel.classList.contains("hidden")) closePanel();
-  }
+  if (e.key !== "Escape") return;
+  if (!$("attendanceModal").classList.contains("hidden")) { $("attendanceModal").classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if (!$("infoModal").classList.contains("hidden")) { $("infoModal").classList.add("hidden"); document.body.classList.remove("lock"); }
+  else if (!$("studentDetail").classList.contains("hidden")) closeDetail();
+  else if (!adminPanel.classList.contains("hidden")) closePanel();
 });
 
 document.querySelectorAll(".panel-tab").forEach(tab => {
@@ -1103,6 +2013,9 @@ document.querySelectorAll(".panel-tab").forEach(tab => {
   });
 });
 
+/* ==========================================================
+   STUDENT DETAIL
+   ========================================================== */
 async function openStudentDetail(studentId) {
   const student = students.find(s => s.id === studentId);
   if (!student) return toast("Student not found", "error");
@@ -1119,8 +2032,7 @@ async function openStudentDetail(studentId) {
   $("detailTotal").textContent = Number(student.totalPresent) || 0;
   $("detailDays").textContent = "—";
   $("detailSubjects").textContent = "—";
-  $("detailHistory").innerHTML = `
-    <div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading history...</div>`;
+  $("detailHistory").innerHTML = `<div class="detail-empty"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
 
   $("studentDetail").classList.remove("hidden");
   document.body.classList.add("lock");
@@ -1162,11 +2074,7 @@ async function openStudentDetail(studentId) {
             <strong>${esc(formatDate(date))}</strong>
             <span class="count">${subs.length} subject${subs.length > 1 ? "s" : ""}</span>
           </div>
-          ${subs.map(s => `
-            <div class="detail-subject-row">
-              <i class="fa-solid fa-check"></i>
-              <span>${esc(s)}</span>
-            </div>`).join("")}
+          ${subs.map(s => `<div class="detail-subject-row"><i class="fa-solid fa-check"></i><span>${esc(s)}</span></div>`).join("")}
         </div>`;
     }).join("");
   } catch (err) {
@@ -1179,7 +2087,6 @@ async function openStudentDetail(studentId) {
       </div>`;
   }
 }
-
 function closeDetail() {
   $("studentDetail").classList.add("hidden");
   document.body.classList.remove("lock");
@@ -1187,6 +2094,9 @@ function closeDetail() {
 $("studentDetail").querySelectorAll("[data-close-detail]").forEach(el =>
   el.addEventListener("click", closeDetail));
 
+/* ==========================================================
+   AUTH
+   ========================================================== */
 const loginView = $("loginView");
 const adminView = $("adminView");
 const panelTitle = $("panelTitle");
@@ -1226,10 +2136,10 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-const loginForm = $("loginForm");
-loginForm.addEventListener("submit", async (e) => {
+$("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  clearErrors(loginForm);
+  const form = e.target;
+  clearErrors(form);
   const email = $("loginEmail").value.trim();
   const pass = $("loginPass").value;
   const emailErr = validateEmail(email);
@@ -1237,7 +2147,7 @@ loginForm.addEventListener("submit", async (e) => {
   if (!pass) setFieldError("loginPass", "Password is required");
   if (emailErr || !pass) return;
 
-  const btn = loginForm.querySelector('button[type="submit"]');
+  const btn = form.querySelector('button[type="submit"]');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Signing in...';
   try {
@@ -1246,7 +2156,7 @@ loginForm.addEventListener("submit", async (e) => {
       await signOut(auth);
       throw new Error("This email is not authorized for admin access.");
     }
-    loginForm.reset();
+    form.reset();
     toast("Welcome back!", "success");
   } catch (err) {
     console.error(err);
@@ -1262,6 +2172,9 @@ $("logoutBtn").addEventListener("click", async () => {
   catch (err) { toast(fbError(err), "error"); }
 });
 
+/* ==========================================================
+   ADMIN — Add student with photo
+   ========================================================== */
 let addPhotoData = "";
 const photoInput = $("photoInput");
 const photoPreview = $("photoPreview");
@@ -1292,10 +2205,10 @@ $("photoClear").addEventListener("click", () => {
   addPhotoData = ""; photoInput.value = ""; updatePhotoPreview();
 });
 
-const addForm = $("addStudentForm");
-addForm.addEventListener("submit", async (e) => {
+$("addStudentForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  clearErrors(addForm);
+  const form = e.target;
+  clearErrors(form);
   const nameEl = $("addName"), rollEl = $("addRoll");
   const name = nameEl.value.trim(), roll = rollEl.value.trim();
   const nameErr = validateName(name), rollErr = validateRoll(roll);
@@ -1303,7 +2216,7 @@ addForm.addEventListener("submit", async (e) => {
   if (rollErr) setFieldError("addRoll", rollErr);
   if (nameErr || rollErr) return;
 
-  const btn = addForm.querySelector('button[type="submit"]');
+  const btn = form.querySelector('button[type="submit"]');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Adding...';
   try {
@@ -1320,7 +2233,7 @@ addForm.addEventListener("submit", async (e) => {
       totalPresent: 0,
       createdAt: serverTimestamp()
     });
-    addForm.reset();
+    form.reset();
     addPhotoData = ""; photoInput.value = ""; updatePhotoPreview();
     nameEl.focus();
     toast(`${name} added successfully`, "success");
@@ -1333,15 +2246,13 @@ addForm.addEventListener("submit", async (e) => {
   }
 });
 
+/* ==========================================================
+   ADMIN — Present session
+   ========================================================== */
 let sessionSubject = "";
 let sessionDate = "";
 let sessionRecords = {};
 let sessionUnsub = null;
-
-function recordDocId(date, subject, studentId) {
-  const safe = subject.replace(/[.\[\]/*~`]/g, "_").trim();
-  return `${date}__${safe}__${studentId}`;
-}
 
 function watchSession() {
   if (sessionUnsub) { sessionUnsub(); sessionUnsub = null; }
@@ -1355,7 +2266,7 @@ function watchSession() {
   renderSessionList();
 
   sessionUnsub = onSnapshot(
-    query(recordsCol, where("date", "==", date), where("subject", "==", subject)),
+    query(recordsCol, where("date", "==", date), where("subject", "==", sanitizeSubject(subject))),
     (snap) => {
       sessionRecords = {};
       snap.docs.forEach(d => {
@@ -1435,83 +2346,11 @@ function renderSessionList() {
 async function markStudent(studentId, newStatus, btn) {
   if (!sessionSubject || !sessionDate) return;
   if (btn.disabled) return;
-
   const row = btn.closest(".student-row");
   const rowButtons = row.querySelectorAll(".mark-btn");
   rowButtons.forEach(b => b.disabled = true);
-
-  const subject = sessionSubject;
-  const date = sessionDate;
-  const sanitizedSubject = subject.replace(/[.\[\]/*~`]/g, "_").trim();
-  const recordId = recordDocId(date, subject, studentId);
-  const recordRef = doc(recordsCol, recordId);
-  const studentRef = doc(db, "students", studentId);
-
-  let wasPresent = false;
-  let isPresent = false;
-
   try {
-    await runTransaction(db, async (tx) => {
-      const recordSnap = await tx.get(recordRef);
-      const studentSnap = await tx.get(studentRef);
-      if (!studentSnap.exists()) throw new Error("Student no longer exists");
-
-      const prevStatus = recordSnap.exists() ? recordSnap.data().status : null;
-      wasPresent = prevStatus === "present";
-
-      const sdata = studentSnap.data();
-      const currentTotal = Number(sdata.totalPresent) || 0;
-      const currentSubj = Number(sdata.subjects?.[sanitizedSubject]) || 0;
-
-      let finalStatus = newStatus;
-      let newTotal = currentTotal;
-      let newSubj = currentSubj;
-
-      if (prevStatus === newStatus) {
-        tx.delete(recordRef);
-        finalStatus = null;
-      } else {
-        tx.set(recordRef, {
-          studentId,
-          studentName: sdata.name || "",
-          studentRoll: sdata.roll || "",
-          date,
-          subject: sanitizedSubject,
-          status: newStatus,
-          markedAt: Date.now(),
-          markedBy: auth.currentUser?.email || ""
-        });
-      }
-
-      isPresent = finalStatus === "present";
-
-      if (isPresent && !wasPresent) { newTotal += 1; newSubj += 1; }
-      else if (!isPresent && wasPresent) {
-        newTotal = Math.max(0, newTotal - 1);
-        newSubj = Math.max(0, newSubj - 1);
-      }
-
-      if (newTotal !== currentTotal || newSubj !== currentSubj) {
-        tx.update(studentRef, {
-          totalPresent: newTotal,
-          [`subjects.${sanitizedSubject}`]: newSubj,
-          updatedAt: serverTimestamp()
-        });
-      }
-    });
-
-    if (isPresent && !wasPresent) {
-      const st = students.find(s => s.id === studentId);
-      addDoc(logsCol, {
-        studentId,
-        name: st?.name || "",
-        roll: st?.roll || "",
-        subject,
-        sessionDate: date,
-        markedBy: auth.currentUser?.email || "",
-        createdAt: serverTimestamp()
-      }).catch(err => console.warn("Log write failed:", err));
-    }
+    await applyAttendanceMark(studentId, sessionSubject, sessionDate, newStatus);
   } catch (err) {
     console.error(err);
     toast(fbError(err), "error");
@@ -1520,7 +2359,9 @@ async function markStudent(studentId, newStatus, btn) {
   }
 }
 
-/* ---------- Manage list ---------- */
+/* ==========================================================
+   ADMIN — Manage list
+   ========================================================== */
 let pendingDeleteId = null;
 const confirmModal = $("confirmModal");
 const confirmMsg = $("confirmMsg");
@@ -1537,20 +2378,17 @@ function closeConfirm() {
 confirmModal.querySelectorAll("[data-close-confirm]").forEach(el =>
   el.addEventListener("click", closeConfirm));
 
-/* Bulk delete helper: queries a collection by studentId and deletes in batches */
 async function bulkDeleteByStudent(collectionRef, studentId) {
   try {
     const snap = await getDocs(query(collectionRef, where("studentId", "==", studentId)));
     if (snap.empty) return 0;
     const docs = snap.docs;
-    let deleted = 0;
     for (let i = 0; i < docs.length; i += 400) {
       const batch = writeBatch(db);
       docs.slice(i, i + 400).forEach(d => batch.delete(d.ref));
       await batch.commit();
-      deleted += Math.min(400, docs.length - i);
     }
-    return deleted;
+    return docs.length;
   } catch (e) {
     console.warn("Bulk delete failed:", e);
     return 0;
@@ -1564,11 +2402,8 @@ confirmOk.addEventListener("click", async () => {
   confirmOk.disabled = true;
   confirmOk.textContent = "Deleting...";
   try {
-    // 1) Delete attendance_records for this student
     await bulkDeleteByStudent(recordsCol, id);
-    // 2) Delete attendance_logs for this student (so name doesn't linger in activity)
     await bulkDeleteByStudent(logsCol, id);
-    // 3) Finally delete the student document
     await deleteDoc(doc(db, "students", id));
     toast(`Deleted: ${st?.name || "student"} (records & activity cleared)`, "success");
     closeConfirm();
@@ -1645,6 +2480,9 @@ function renderAdminList() {
   });
 }
 
+/* ==========================================================
+   ADMIN — Activity feed
+   ========================================================== */
 onSnapshot(
   query(logsCol, orderBy("createdAt", "desc"), limit(15)),
   (snap) => {
@@ -1676,7 +2514,5 @@ onSnapshot(
   }
 );
 
+/* ---------- Init ---------- */
 renderSkeleton();
-</script>
-</body>
-</html>
